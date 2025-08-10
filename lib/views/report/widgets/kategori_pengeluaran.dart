@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:money_management_app/models/category_model.dart';
+import 'package:money_management_app/models/kategori_model.dart';
 import 'package:money_management_app/widgets/custom_card.dart';
 
 class KategoriPengeluaran extends StatefulWidget {
@@ -10,7 +10,7 @@ class KategoriPengeluaran extends StatefulWidget {
 }
 
 class _KategoriPengeluaranState extends State<KategoriPengeluaran> {
-  final categoryData = CategoryModel.sampleData;
+  final categoryData = KategoriModel.sampleData;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class _KategoriPengeluaranState extends State<KategoriPengeluaran> {
           const SizedBox(height: 18),
           ...categoryData
               .toList()
-              .where((d) => (d.amount as num) > 0)
+              .where((d) => (d.planned as num) > 0)
               .toList()
               .map(
                 (data) => Padding(
@@ -38,8 +38,8 @@ class _KategoriPengeluaranState extends State<KategoriPengeluaran> {
                         ),
                       ),
                       const SizedBox(width: 10),
-                      Expanded(child: Text(data.category)),
-                      Text('Rp${data.amount}'),
+                      Expanded(child: Text(data.kategori)),
+                      Text('Rp${data.planned}'),
                     ],
                   ),
                 ),

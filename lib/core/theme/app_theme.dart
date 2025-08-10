@@ -4,6 +4,47 @@ import 'package:google_fonts/google_fonts.dart';
 class AppTheme {
   static final ThemeData lightTheme = ThemeData(
     primarySwatch: Colors.teal,
+
+    dropdownMenuTheme: DropdownMenuThemeData(
+      textStyle: GoogleFonts.inter(
+        color: Colors.black87,
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: Colors.teal, width: 1.2),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: Colors.teal, width: 2),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: Colors.black26, width: 1),
+        ),
+        filled: true,
+        fillColor: const Color(0xFFF6F8FB),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
+        ),
+        hintStyle: GoogleFonts.inter(color: Colors.black54, fontSize: 15),
+        labelStyle: GoogleFonts.inter(color: Colors.black87, fontSize: 15),
+      ),
+      menuStyle: MenuStyle(
+        backgroundColor: MaterialStateProperty.all(const Color(0xFFFFFFFF)),
+        shape: WidgetStateProperty.all(
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        ),
+        elevation: MaterialStateProperty.all(6),
+        padding: MaterialStateProperty.all(
+          const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+        ),
+        shadowColor: MaterialStateProperty.all(Colors.black12),
+      ),
+    ),
     scaffoldBackgroundColor: const Color(0xFFF6F8FB),
     colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.blue).copyWith(
       primary: const Color(0xFF43A6A5), // Primary color updated
@@ -12,6 +53,18 @@ class AppTheme {
       error: const Color(0xFFB00020),
       onError: Colors.white,
     ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        textStyle: const TextStyle(
+          fontSize: 16,
+          // fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      ),
+    ),
+
     iconTheme: const IconThemeData(color: Colors.white),
     textTheme: GoogleFonts.interTextTheme(),
     appBarTheme: AppBarTheme(
@@ -32,12 +85,14 @@ class AppTheme {
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: const Color(0xFF232B47),
+      fillColor: const Color(0xFFF6F8FB),
+      labelStyle: const TextStyle(color: Colors.black87),
+      hintStyle: const TextStyle(color: Colors.black54),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
         borderSide: BorderSide.none,
       ),
-      labelStyle: const TextStyle(color: Colors.white70),
     ),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       backgroundColor: Colors.white,

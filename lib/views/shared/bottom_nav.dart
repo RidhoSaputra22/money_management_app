@@ -65,7 +65,11 @@ class BottomNav extends StatelessWidget {
                 Navigator.pushReplacementNamed(context, '/');
                 break;
               case 1:
-                Navigator.pushReplacementNamed(context, '/income');
+                Navigator.pushReplacementNamed(
+                  context,
+                  '/income',
+                  arguments: {'budgetId': 'SAWAH'},
+                );
                 break;
               case 2:
                 Navigator.pushReplacementNamed(context, '/expense');
