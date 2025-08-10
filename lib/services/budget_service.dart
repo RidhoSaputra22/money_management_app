@@ -21,7 +21,6 @@ class BudgetService {
           });
         }).toList(),
       );
-      print('Fetched ${budgetsWithKategoris} budgets with kategoris');
       return budgetsWithKategoris;
     } catch (e) {
       throw Exception('Failed to load budgets: ${e.toString()}');

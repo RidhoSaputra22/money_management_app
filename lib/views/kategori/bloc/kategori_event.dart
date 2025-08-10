@@ -1,4 +1,3 @@
-import 'package:money_management_app/models/budget_model.dart';
 import 'package:money_management_app/models/kategori_model.dart';
 
 abstract class KategoriEvent {}

@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
 
 import 'package:money_management_app/models/kategori_model.dart';
 
@@ -61,7 +60,7 @@ class BudgetModel {
       'range': range,
       'description': description,
       'createdAt': createdAt.millisecondsSinceEpoch,
-      'kategoris': kategoris?.map((x) => x?.toMap())?.toList(),
+      'kategoris': kategoris?.map((x) => x.toMap()).toList(),
     };
   }
 

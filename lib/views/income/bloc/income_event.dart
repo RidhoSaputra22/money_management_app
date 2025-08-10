@@ -1,4 +1,3 @@
-import 'package:money_management_app/models/budget_model.dart';
 import 'package:money_management_app/models/income_model.dart';
 
 abstract class IncomeEvent {}

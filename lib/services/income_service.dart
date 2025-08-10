@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:money_management_app/models/income_model.dart';
 import 'package:money_management_app/services/auth_service.dart';
-import 'package:money_management_app/services/firestore_service.dart';
 
 class IncomeService {
   static Future<List<IncomeModel>> fetchAll() async {

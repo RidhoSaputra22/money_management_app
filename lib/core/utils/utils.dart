@@ -89,4 +89,25 @@ class Utils {
     if (value >= 1e3) return '${(value / 1e3).toStringAsFixed(1)} rb';
     return value.toInt().toString();
   }
+
+  static String timeAgo(DateTime dateTime) {
+    final now = DateTime.now();
+    final diff = now.difference(dateTime);
+
+    if (diff.inSeconds < 60) {
+      return '${diff.inSeconds} detik yang lalu';
+    } else if (diff.inMinutes < 60) {
+      return '${diff.inMinutes} menit yang lalu';
+    } else if (diff.inHours < 24) {
+      return '${diff.inHours} jam yang lalu';
+    } else if (diff.inDays < 30) {
+      return '${diff.inDays} hari yang lalu';
+    } else if (diff.inDays < 365) {
+      final months = (diff.inDays / 30).floor();
+      return '$months bulan yang lalu';
+    } else {
+      final years = (diff.inDays / 365).floor();
+      return '$years tahun yang lalu';
+    }
+  }
 }

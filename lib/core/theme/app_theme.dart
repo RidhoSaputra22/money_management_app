@@ -34,15 +34,15 @@ class AppTheme {
         labelStyle: GoogleFonts.inter(color: Colors.black87, fontSize: 15),
       ),
       menuStyle: MenuStyle(
-        backgroundColor: MaterialStateProperty.all(const Color(0xFFFFFFFF)),
+        backgroundColor: WidgetStateProperty.all(const Color(0xFFFFFFFF)),
         shape: WidgetStateProperty.all(
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
         ),
-        elevation: MaterialStateProperty.all(6),
-        padding: MaterialStateProperty.all(
+        elevation: WidgetStateProperty.all(6),
+        padding: WidgetStateProperty.all(
           const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
         ),
-        shadowColor: MaterialStateProperty.all(Colors.black12),
+        shadowColor: WidgetStateProperty.all(Colors.black12),
       ),
     ),
     scaffoldBackgroundColor: const Color(0xFFF6F8FB),

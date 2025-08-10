@@ -3,8 +3,6 @@ import 'dart:math' as math;
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:money_management_app/core/utils/utils.dart';
-import 'package:money_management_app/models/expense_model.dart';
-import 'package:money_management_app/models/income_model.dart';
 import 'package:money_management_app/services/expense_service.dart';
 import 'package:money_management_app/services/income_service.dart';
 import 'package:money_management_app/views/report/components/legend_item.dart';
@@ -30,27 +28,28 @@ class _TrenSaldoBulananState extends State<TrenSaldoBulanan> {
 
   Future<void> _fetchData() async {
     final year = DateTime.now().year;
+    final month = DateTime.now().month;
     final incomes = await IncomeService.fetchByYear(year);
     final expenses = await ExpenseService.fetchByYear(year);
 
     // Preprocess incomes and expenses by month for O(1) lookup
-    final incomeByMonth = List<double>.filled(12, 0);
-    final expenseByMonth = List<double>.filled(12, 0);
+    final incomeByMonth = List<double>.filled(month, 0);
+    final expenseByMonth = List<double>.filled(month, 0);
 
     for (final income in incomes) {
       final m = income.createAt.month - 1;
-      if (income.createAt.year == year && m >= 0 && m < 12) {
+      if (income.createAt.year == year && m >= 0 && m < month) {
         incomeByMonth[m] += income.amount;
       }
     }
     for (final expense in expenses) {
       final m = expense.createAt.month - 1;
-      if (expense.createAt.year == year && m >= 0 && m < 12) {
+      if (expense.createAt.year == year && m >= 0 && m < month) {
         expenseByMonth[m] += expense.amount;
       }
     }
 
-    monthlyData = List.generate(12, (i) {
+    monthlyData = List.generate(month, (i) {
       final month = DateTime(year, i + 1);
       final saldo = incomeByMonth[i] - expenseByMonth[i];
       return TrenSaldoBulananData(saldo: saldo, bulan: month);
@@ -93,9 +92,25 @@ class _TrenSaldoBulananState extends State<TrenSaldoBulanan> {
                       LineChartData(
                         maxY: maxSaldo,
                         minY: 0,
-                        maxX: 12,
-                        minX: 1,
+                        maxX: DateTime.now().month.toDouble(),
+                        minX: 0,
                         gridData: FlGridData(show: true),
+                        lineTouchData: LineTouchData(
+                          touchTooltipData: LineTouchTooltipData(
+                            getTooltipColor: (touchedSpot) => Colors.teal,
+                            getTooltipItems: (touchedSpots) =>
+                                touchedSpots.map((touchedSpot) {
+                                  final month = Utils.getMonthName(
+                                    touchedSpot.x.toInt() + 1,
+                                  );
+                                  final saldo = touchedSpot.y;
+                                  return LineTooltipItem(
+                                    '${month}\n${Utils.toIDR(saldo)}',
+                                    TextStyle(color: Colors.white),
+                                  );
+                                }).toList(),
+                          ),
+                        ),
                         titlesData: FlTitlesData(
                           leftTitles: AxisTitles(
                             sideTitles: SideTitles(

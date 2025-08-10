@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:money_management_app/core/utils/utils.dart';
 import 'package:money_management_app/models/expense_model.dart';
 import 'package:money_management_app/models/income_model.dart';
+import 'package:money_management_app/services/expense_service.dart';
+import 'package:money_management_app/services/income_service.dart';
 import 'package:money_management_app/widgets/custom_card.dart';
 import 'components/pemasukan_pengeluaran_bar_chart.dart';
 import 'components/legend_row.dart';
@@ -35,23 +37,12 @@ class _PemasukanPengeluaranChartState extends State<PemasukanPengeluaranChart> {
   }
 
   Future<void> _fetchChartData() async {
-    final firestore = FirebaseFirestore.instance;
-    final expensesSnapshot = await firestore
-        .collection('expenses')
-        .orderBy('createAt')
-        .get();
-    final incomesSnapshot = await firestore
-        .collection('incomes')
-        .orderBy('createAt')
-        .get();
+    final List<IncomeModel> incomes = await IncomeService.fetchAll();
+    final List<ExpenseModel> expenses = await ExpenseService.fetchAll();
 
     setState(() {
-      _incomeData = incomesSnapshot.docs
-          .map((doc) => IncomeModel.fromMap(doc.data()))
-          .toList();
-      _expenseData = expensesSnapshot.docs
-          .map((doc) => ExpenseModel.fromMap(doc.data()))
-          .toList();
+      _incomeData = incomes;
+      _expenseData = expenses;
       _isLoading = false;
     });
   }
