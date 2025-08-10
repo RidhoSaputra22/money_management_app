@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:money_management_app/models/budget_model.dart';
-import 'package:money_management_app/models/kategori_model.dart';
 
 class Utils {
   static String currency(double amount) => '\$${amount.toStringAsFixed(2)}';
@@ -73,5 +70,23 @@ class Utils {
 
   static List<String> getListDaysName() {
     return ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+  }
+
+  static bool isSameMonth(date, DateTime month) {
+    if (date is DateTime) {
+      return date.year == month.year && date.month == month.month;
+    }
+    return false;
+  }
+
+  static double sumList(List<double> list) {
+    return list.fold(0.0, (sum, item) => sum + item);
+  }
+
+  static String currencySuffix(double value) {
+    if (value >= 1e9) return '${(value / 1e9).toStringAsFixed(1)} M';
+    if (value >= 1e6) return '${(value / 1e6).toStringAsFixed(1)} jt';
+    if (value >= 1e3) return '${(value / 1e3).toStringAsFixed(1)} rb';
+    return value.toInt().toString();
   }
 }

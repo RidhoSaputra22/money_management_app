@@ -19,8 +19,8 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
   ) async {
     emit(ExpenseLoading());
     try {
-      final expenses = await ExpenseService.fetchExpenses();
-      final budgets = await BudgetService.fetchBudgets();
+      final expenses = await ExpenseService.fetchAll();
+      final budgets = await BudgetService.fetchBudgetsWithKategoris();
       emit(ExpenseLoaded(expenses, budgets));
     } catch (e) {
       emit(ExpenseError('Gagal memuat data: $e'));
@@ -75,8 +75,8 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState> {
   ) async {
     emit(ExpenseLoading());
     try {
-      final expenses = await ExpenseService.fetchExpenses();
-      final budgets = await BudgetService.fetchBudgets();
+      final expenses = await ExpenseService.fetchAll();
+      final budgets = await BudgetService.fetchBudgetsWithKategoris();
 
       final filteredExpenses = expenses.where((expense) {
         final matchesBudget =

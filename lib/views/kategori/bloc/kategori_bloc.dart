@@ -20,8 +20,10 @@ class KategoriBloc extends Bloc<KategoriEvent, KategoriState> {
   ) async {
     emit(KategoriLoading());
     try {
-      final kategoris = await KategoriService.fetchKategoris(event.budgetId);
-      final budgets = await BudgetService.fetchBudgets();
+      final kategoris = await KategoriService.fetchKategorisByBudget(
+        event.budgetId,
+      );
+      final budgets = await BudgetService.fetchBudgetsWithKategoris();
 
       emit(KategoriLoaded(kategoris, budgets));
     } catch (e) {

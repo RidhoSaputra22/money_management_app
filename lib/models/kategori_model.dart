@@ -5,23 +5,24 @@ import 'package:flutter/widgets.dart';
 import 'package:money_management_app/core/utils/utils.dart';
 
 class KategoriModel {
-  final String? id;
-  final String userId; // User ID for the owner of the category
-  final String budgetId; // Budget ID this category belongs to
-  final String kategori;
-  final double planned;
-  final Color? color;
-  final DateTime? createdAt;
+  String? id;
+  String userId; // User ID for the owner of the category
+  String budgetId; // Budget ID this category belongs to
+  String kategori;
+  double planned;
+  Color? color;
+  DateTime? createdAt;
 
   KategoriModel({
     this.id,
     required this.userId,
     required this.budgetId,
-    required this.kategori,
+    required String kategori,
     this.color = const Color(0xFF000000), // Default color if not provided
     required this.planned,
     DateTime? createdAt,
-  }) : createdAt = createdAt ?? DateTime.now();
+  }) : kategori = kategori.toUpperCase(),
+       createdAt = createdAt ?? DateTime.now();
 
   KategoriModel copyWith({
     ValueGetter<String?>? id,
@@ -48,7 +49,7 @@ class KategoriModel {
       'id': id,
       'userId': userId,
       'budgetId': budgetId,
-      'kategori': kategori,
+      'kategori': kategori.toUpperCase(),
       'planned': planned,
       'color': color?.value,
       'createdAt': createdAt?.millisecondsSinceEpoch,
@@ -60,7 +61,7 @@ class KategoriModel {
       id: map['id'],
       userId: map['userId'] ?? '',
       budgetId: map['budgetId'] ?? '',
-      kategori: map['kategori'] ?? '',
+      kategori: map['kategori'].toString().toUpperCase(),
       planned: map['planned']?.toDouble() ?? 0.0,
       color: map['color'] != null ? Color(map['color']) : null,
       createdAt: map['createdAt'] != null
@@ -116,5 +117,17 @@ class KategoriModel {
         createdAt: DateTime.now(),
       ),
     ];
+  }
+
+  static KategoriModel clone(KategoriModel k) {
+    return KategoriModel(
+      id: k.id,
+      userId: k.userId,
+      budgetId: k.budgetId,
+      kategori: k.kategori,
+      planned: k.planned,
+      color: k.color,
+      createdAt: k.createdAt,
+    );
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:money_management_app/views/report/widgets/distribusi_chart.dart';
 import 'package:money_management_app/views/report/widgets/kategori_pengeluaran.dart';
-import 'package:money_management_app/views/report/pemasukan_pemasukan_chart/pemasukan_pengeluaran_chart.dart';
+import 'package:money_management_app/views/report/pemasukan_pengeluaran_chart/pemasukan_pengeluaran_chart.dart';
 import 'package:money_management_app/views/report/widgets/ringkasan_bulan_ini.dart';
 import 'package:money_management_app/views/report/widgets/tren_saldo_bulanan.dart';
 import 'package:money_management_app/views/shared/bottom_nav.dart';

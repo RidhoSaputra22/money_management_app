@@ -35,7 +35,7 @@ class BudgetBloc extends Bloc<BudgetEvent, BudgetState> {
     emit(BudgetLoading());
     try {
       // Simulate fetching budgets from a database or API
-      final budgets = await BudgetService.fetchBudgets();
+      final budgets = await BudgetService.fetchBudgetsWithKategoris();
       emit(BudgetLoaded(budgets: budgets));
     } catch (e) {
       emit(BudgetError(message: 'Failed to load budgets: ${e.toString()}'));

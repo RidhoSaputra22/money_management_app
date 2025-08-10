@@ -4,11 +4,12 @@ import 'package:money_management_app/services/auth_service.dart';
 import 'package:money_management_app/services/firestore_service.dart';
 
 class IncomeService {
-  static Future<List<IncomeModel>> fetchIncomes() async {
+  static Future<List<IncomeModel>> fetchAll() async {
     try {
+      final userId = await AuthService().getCurrentUserId();
       final snapshot = await FirebaseFirestore.instance
           .collection('incomes')
-          // .where('userId', isEqualTo: AuthService().getCurrentUserId())
+          .where('userId', isEqualTo: userId)
           .get();
 
       return snapshot.docs
@@ -51,6 +52,21 @@ class IncomeService {
           .delete();
     } catch (e) {
       throw Exception('Failed to delete income: ${e.toString()}');
+    }
+  }
+
+  static Future<List<IncomeModel>> fetchByYear(int year) async {
+    try {
+      final start = DateTime(year, 1, 1);
+      final end = DateTime(year + 1, 1, 1);
+      final snapshot = await IncomeService.fetchAll();
+
+      return snapshot.where((income) {
+        final createAt = income.createAt;
+        return createAt.isAfter(start) && createAt.isBefore(end);
+      }).toList();
+    } catch (e) {
+      throw Exception('Failed to fetch incomes by year: ${e.toString()}');
     }
   }
 }

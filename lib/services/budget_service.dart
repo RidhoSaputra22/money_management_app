@@ -4,7 +4,7 @@ import 'package:money_management_app/models/kategori_model.dart';
 import 'package:money_management_app/services/kategori_services.dart';
 
 class BudgetService {
-  static Future<List<BudgetModel>> fetchBudgets() async {
+  static Future<List<BudgetModel>> fetchBudgetsWithKategoris() async {
     try {
       final budgets = await FirebaseFirestore.instance
           .collection('budgets')
@@ -12,9 +12,8 @@ class BudgetService {
 
       var budgetsWithKategoris = await Future.wait(
         budgets.docs.map((doc) async {
-          List<KategoriModel> kategoris = await KategoriService.fetchKategoris(
-            doc.id,
-          );
+          List<KategoriModel> kategoris =
+              await KategoriService.fetchKategorisByBudget(doc.id);
           return BudgetModel.fromMap({
             ...doc.data(),
             'id': doc.id,
@@ -24,6 +23,20 @@ class BudgetService {
       );
       print('Fetched ${budgetsWithKategoris} budgets with kategoris');
       return budgetsWithKategoris;
+    } catch (e) {
+      throw Exception('Failed to load budgets: ${e.toString()}');
+    }
+  }
+
+  static Future<List<BudgetModel>> fetchAll() async {
+    try {
+      final budgets = await FirebaseFirestore.instance
+          .collection('budgets')
+          .get();
+
+      return budgets.docs.map((doc) {
+        return BudgetModel.fromMap({...doc.data(), 'id': doc.id});
+      }).toList();
     } catch (e) {
       throw Exception('Failed to load budgets: ${e.toString()}');
     }

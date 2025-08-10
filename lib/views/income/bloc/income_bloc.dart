@@ -19,8 +19,8 @@ class IncomeBloc extends Bloc<IncomeEvent, IncomeState> {
   ) async {
     emit(IncomeLoading());
     try {
-      final incomes = await IncomeService.fetchIncomes();
-      final budgets = await BudgetService.fetchBudgets();
+      final incomes = await IncomeService.fetchAll();
+      final budgets = await BudgetService.fetchBudgetsWithKategoris();
       emit(IncomeLoaded(incomes, budgets));
     } catch (e) {
       emit(IncomeError('Gagal memuat data: $e'));
@@ -75,8 +75,8 @@ class IncomeBloc extends Bloc<IncomeEvent, IncomeState> {
   ) async {
     emit(IncomeLoading());
     try {
-      final incomes = await IncomeService.fetchIncomes();
-      final budgets = await BudgetService.fetchBudgets();
+      final incomes = await IncomeService.fetchAll();
+      final budgets = await BudgetService.fetchBudgetsWithKategoris();
 
       final filteredIncomes = incomes.where((income) {
         // final matchesBudget =

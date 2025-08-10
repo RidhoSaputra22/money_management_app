@@ -9,6 +9,7 @@ import 'package:money_management_app/models/income_model.dart';
 class PemasukanPengeluaranBarChart extends StatelessWidget {
   final String viewType;
   final int selectedMonth;
+  final int selectedYear;
   final List<IncomeModel> incomeData;
   final List<ExpenseModel> expenseData;
 
@@ -18,6 +19,7 @@ class PemasukanPengeluaranBarChart extends StatelessWidget {
     super.key,
     required this.viewType,
     required this.selectedMonth,
+    required this.selectedYear,
     required this.incomeData,
     required this.expenseData,
   });
@@ -76,9 +78,7 @@ class PemasukanPengeluaranBarChart extends StatelessWidget {
       );
 
       // Get the number of days in the selected month and year
-      final now = DateTime.now();
-      final year = now.year;
-      final daysInMonth = DateTime(year, selectedMonth + 1, 0).day;
+      final daysInMonth = DateTime(selectedYear, selectedMonth + 1, 0).day;
 
       barGroups = List.generate(
         daysInMonth,
@@ -102,10 +102,39 @@ class PemasukanPengeluaranBarChart extends StatelessWidget {
 
     return BarChart(
       BarChartData(
-        maxY: _getMaxY(incomeMaps, expenseMaps),
+        maxY: _getMaxY(incomeMaps, expenseMaps) == 0
+            ? 1
+            : _getMaxY(incomeMaps, expenseMaps),
         minY: 0,
         alignment: BarChartAlignment.spaceAround,
-        barTouchData: BarTouchData(enabled: true),
+        barTouchData: BarTouchData(
+          touchTooltipData: BarTouchTooltipData(
+            direction: TooltipDirection.top,
+            getTooltipColor: (color) => Colors.teal,
+            tooltipBorder: const BorderSide(color: Colors.teal, width: 1),
+            maxContentWidth: 200,
+            getTooltipItem: (group, groupIndex, rod, rodIndex) {
+              final isIncome = rod.color == Colors.green;
+              final amount = rod.toY;
+              final label = isIncome ? 'Pemasukan' : 'Pengeluaran';
+              return BarTooltipItem(
+                '$label: ${Utils.toIDR(amount)}\n',
+                const TextStyle(
+                  fontWeight: FontWeight.normal,
+                  fontSize: 14,
+                  color: Colors.white,
+                ),
+                children: [
+                  TextSpan(
+                    text: '${_months[group.x]} ${selectedYear}',
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                ],
+              );
+            },
+          ),
+          enabled: true,
+        ),
         titlesData: FlTitlesData(
           rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
           topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
@@ -114,7 +143,7 @@ class PemasukanPengeluaranBarChart extends StatelessWidget {
               showTitles: true,
               reservedSize: 40,
               getTitlesWidget: (value, _) => Text(
-                _formatYAxisLabel(value),
+                Utils.currencySuffix(value),
                 style: const TextStyle(fontSize: 12),
               ),
             ),
@@ -130,11 +159,11 @@ class PemasukanPengeluaranBarChart extends StatelessWidget {
               getTitlesWidget: (value, _) {
                 if (viewType == 'Tahunan') {
                   return Transform.rotate(
-                    alignment: Alignment.topRight,
-                    origin: Offset(0, 30),
+                    alignment: Alignment.topCenter,
+                    origin: Offset(10, 50),
                     angle: -45 * math.pi / 180,
                     child: Text(
-                      _monthLabel(value),
+                      Utils.getMonthName(value.toInt()),
                       style: const TextStyle(fontSize: 12),
                     ),
                   );
@@ -155,7 +184,7 @@ class PemasukanPengeluaranBarChart extends StatelessWidget {
             ),
           ),
         ),
-        borderData: FlBorderData(show: true),
+        borderData: FlBorderData(show: false),
         gridData: FlGridData(show: true),
         barGroups: barGroups,
       ),
@@ -170,7 +199,7 @@ class PemasukanPengeluaranBarChart extends StatelessWidget {
     final Map<int, double> grouped = {};
     for (var item in data) {
       final date = getDate(item);
-      if (date.month == selectedMonth + 1) {
+      if (date.month == selectedMonth + 1 && date.year == selectedYear) {
         // selectedMonth is 0-based
         final day = date.day;
         grouped[day] = (grouped[day] ?? 0) + getAmount(item);
@@ -186,8 +215,11 @@ class PemasukanPengeluaranBarChart extends StatelessWidget {
   ) {
     final Map<int, double> grouped = {};
     for (var item in data) {
-      final month = getDate(item).month - 1;
-      grouped[month] = (grouped[month] ?? 0) + getAmount(item);
+      final date = getDate(item);
+      if (date.year == selectedYear) {
+        final month = date.month - 1; // 0-based index for months
+        grouped[month] = (grouped[month] ?? 0) + getAmount(item);
+      }
     }
     return grouped;
   }
@@ -201,18 +233,6 @@ class PemasukanPengeluaranBarChart extends StatelessWidget {
       0,
       (a, b) => a > b ? a : b,
     );
-    return (maxIncome > maxExpense ? maxIncome : maxExpense) * 2;
-  }
-
-  String _formatYAxisLabel(double value) {
-    if (value >= 1e9) return '${(value / 1e9).toStringAsFixed(1)} M';
-    if (value >= 1e6) return '${(value / 1e6).toStringAsFixed(1)} jt';
-    if (value >= 1e3) return '${(value / 1e3).toStringAsFixed(1)} rb';
-    return value.toInt().toString();
-  }
-
-  String _monthLabel(double value) {
-    if (value >= 0 && value < 12) return _months[value.toInt()];
-    return '';
+    return (maxIncome > maxExpense ? maxIncome : maxExpense) * 1.2;
   }
 }

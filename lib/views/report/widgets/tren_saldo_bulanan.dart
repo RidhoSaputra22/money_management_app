@@ -1,6 +1,21 @@
+import 'dart:math' as math;
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:money_management_app/core/utils/utils.dart';
+import 'package:money_management_app/models/expense_model.dart';
+import 'package:money_management_app/models/income_model.dart';
+import 'package:money_management_app/services/expense_service.dart';
+import 'package:money_management_app/services/income_service.dart';
+import 'package:money_management_app/views/report/components/legend_item.dart';
 import 'package:money_management_app/widgets/custom_card.dart';
+
+class TrenSaldoBulananData {
+  double saldo;
+  DateTime bulan;
+
+  TrenSaldoBulananData({required this.saldo, required this.bulan});
+}
 
 class TrenSaldoBulanan extends StatefulWidget {
   const TrenSaldoBulanan({super.key});
@@ -10,63 +25,128 @@ class TrenSaldoBulanan extends StatefulWidget {
 }
 
 class _TrenSaldoBulananState extends State<TrenSaldoBulanan> {
-  final monthlyIncome = [5, 6, 7];
-  final incomeData = [4200000, 4500000, 4700000];
-  final expenseData = [3200000, 3400000, 360];
+  List<TrenSaldoBulananData> monthlyData = [];
+  bool isLoading = true;
+
+  Future<void> _fetchData() async {
+    final year = DateTime.now().year;
+    final incomes = await IncomeService.fetchByYear(year);
+    final expenses = await ExpenseService.fetchByYear(year);
+
+    // Preprocess incomes and expenses by month for O(1) lookup
+    final incomeByMonth = List<double>.filled(12, 0);
+    final expenseByMonth = List<double>.filled(12, 0);
+
+    for (final income in incomes) {
+      final m = income.createAt.month - 1;
+      if (income.createAt.year == year && m >= 0 && m < 12) {
+        incomeByMonth[m] += income.amount;
+      }
+    }
+    for (final expense in expenses) {
+      final m = expense.createAt.month - 1;
+      if (expense.createAt.year == year && m >= 0 && m < 12) {
+        expenseByMonth[m] += expense.amount;
+      }
+    }
+
+    monthlyData = List.generate(12, (i) {
+      final month = DateTime(year, i + 1);
+      final saldo = incomeByMonth[i] - expenseByMonth[i];
+      return TrenSaldoBulananData(saldo: saldo, bulan: month);
+    });
+
+    if (!mounted) return;
+
+    setState(() {
+      monthlyData = monthlyData;
+      isLoading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchData();
+  }
+
+  double get maxSaldo {
+    return monthlyData.isNotEmpty
+        ? monthlyData.map((e) => e.saldo).reduce((a, b) => a > b ? a : b) * 1.2
+        : 0;
+  }
 
   @override
   Widget build(BuildContext context) {
     return CustomCard(
       header: const Text('Tren Saldo Bulanan'),
-      content: SizedBox(
-        height: 200,
-        child: LineChart(
-          LineChartData(
-            maxY: 50,
-            minY: 0,
-            gridData: FlGridData(show: true),
-            titlesData: FlTitlesData(
-              leftTitles: AxisTitles(
-                sideTitles: SideTitles(
-                  showTitles: true,
-                  reservedSize: 40,
-                  getTitlesWidget: (value, _) => Text('${value.toInt()} jt'),
-                ),
-              ),
-              bottomTitles: AxisTitles(
-                sideTitles: SideTitles(
-                  showTitles: true,
-                  interval: 1,
-                  getTitlesWidget: (value, meta) {
-                    final index = value.toInt();
-                    if (index < 0 || index >= monthlyIncome.length) {
-                      return const SizedBox();
-                    }
-                    return Padding(
-                      padding: const EdgeInsets.only(top: 8),
-                      child: Text('Bln ${monthlyIncome[index]}'),
-                    );
-                  },
-                ),
-              ),
-              rightTitles: AxisTitles(),
-              topTitles: AxisTitles(),
+      content: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 70, top: 20),
+            // padding: const EdgeInsets.all(0),
+            child: SizedBox(
+              height: 200,
+              child: isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : LineChart(
+                      LineChartData(
+                        maxY: maxSaldo,
+                        minY: 0,
+                        maxX: 12,
+                        minX: 1,
+                        gridData: FlGridData(show: true),
+                        titlesData: FlTitlesData(
+                          leftTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                              showTitles: true,
+                              reservedSize: 40,
+                              getTitlesWidget: (value, _) => Text(
+                                Utils.currencySuffix(value),
+                                style: TextStyle(fontSize: 12),
+                              ),
+                            ),
+                          ),
+                          bottomTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                              showTitles: true,
+                              interval: 1,
+                              getTitlesWidget: (value, meta) {
+                                return Transform.rotate(
+                                  alignment: Alignment.topCenter,
+                                  origin: Offset(20, 50),
+                                  angle: -45 * math.pi / 180,
+                                  child: Text(
+                                    Utils.getMonthName(value.toInt()),
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                          rightTitles: AxisTitles(),
+                          topTitles: AxisTitles(),
+                        ),
+                        borderData: FlBorderData(show: false),
+                        lineBarsData: [
+                          LineChartBarData(
+                            spots: List.generate(monthlyData.length, (i) {
+                              final saldo = monthlyData[i].saldo;
+                              return FlSpot(i.toDouble(), saldo.toDouble());
+                            }),
+                            isCurved: true,
+                            color: Colors.blue,
+                            barWidth: 4,
+                            dotData: FlDotData(show: false),
+                          ),
+                        ],
+                      ),
+                    ),
             ),
-            borderData: FlBorderData(show: false),
-            lineBarsData: [
-              LineChartBarData(
-                spots: List.generate(monthlyIncome.length, (i) {
-                  final saldo = incomeData[i] - expenseData[i];
-                  return FlSpot(i.toDouble(), saldo.toDouble() / 1000000);
-                }),
-                isCurved: true,
-                color: Colors.blue,
-                barWidth: 4,
-                dotData: FlDotData(show: false),
-              ),
-            ],
           ),
-        ),
+          // SizedBox(height: 20),
+          LegendItem(color: Colors.blue, label: 'Saldo'),
+        ],
       ),
     );
   }

@@ -2,9 +2,23 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_management_app/core/utils/utils.dart';
+import 'package:money_management_app/models/expense_model.dart';
 import 'package:money_management_app/models/kategori_model.dart';
+import 'package:money_management_app/services/expense_service.dart';
 import 'package:money_management_app/services/kategori_services.dart';
 import 'package:money_management_app/widgets/custom_card.dart';
+
+class DistribusiData {
+  final String kategori;
+  final double total;
+  final Color color;
+
+  DistribusiData({
+    required this.kategori,
+    required this.total,
+    required this.color,
+  });
+}
 
 class DistribusiChart extends StatefulWidget {
   DistribusiChart({super.key});
@@ -14,21 +28,60 @@ class DistribusiChart extends StatefulWidget {
 }
 
 class _DistribusiChartState extends State<DistribusiChart> {
-  List<KategoriModel> data = [];
+  List<DistribusiData> data = [];
   bool isLoading = true;
   bool isError = false;
 
-  _fetch() async {
+  Future<void> _fetch() async {
     try {
-      List<KategoriModel> list = await KategoriService.fetchAll();
+      // Fetch kategori and expense in parallel
+      final results = await Future.wait([
+        KategoriService.fetchAll(),
+        ExpenseService.fetchAll(),
+      ]);
+      final kategoriList = results[0] as List<KategoriModel>;
+      final expenseList = results[1] as List<ExpenseModel>;
+
+      // Build kategori lookup and color map
+      final kategoriMap = {for (var k in kategoriList) k.id!: k};
+      final Map<String, double> totalPerKategori = {};
+      final Map<String, Color> colorPerKategori = {};
+
+      // Aggregate totals per kategori
+      for (var expense in expenseList) {
+        final kategori = kategoriMap[expense.kategoriId];
+        if (kategori == null) continue;
+        totalPerKategori.update(
+          kategori.kategori,
+          (v) => v + expense.amount,
+          ifAbsent: () => expense.amount,
+        );
+        colorPerKategori.putIfAbsent(
+          kategori.kategori,
+          () => kategori.color ?? Colors.grey,
+        );
+      }
+
+      // Prepare chart data
+      final distribusiDataList = totalPerKategori.entries
+          .map(
+            (entry) => DistribusiData(
+              kategori: entry.key,
+              total: entry.value,
+              color: colorPerKategori[entry.key] ?? Colors.grey,
+            ),
+          )
+          .toList();
+
       setState(() {
-        data = list;
+        data = distribusiDataList;
         isLoading = false;
+        isError = false;
       });
-    } catch (e) {
+    } catch (_) {
       setState(() {
-        isError = true;
         isLoading = false;
+        isError = true;
       });
     }
   }
@@ -45,12 +98,12 @@ class _DistribusiChartState extends State<DistribusiChart> {
         sections: data.map((kategori) {
           final total = data.fold<num>(
             0,
-            (sum, item) => sum + (item.planned as num),
+            (sum, item) => sum + (item.total as num),
           );
-          final percent = ((kategori.planned as num) / total * 100)
+          final percent = ((kategori.total as num) / total * 100)
               .toStringAsFixed(1);
           return PieChartSectionData(
-            value: ((kategori.planned) as num).toDouble(),
+            value: ((kategori.total) as num).toDouble(),
             color: kategori.color,
             title: '$percent%',
             radius: 50,
@@ -85,7 +138,7 @@ class _DistribusiChartState extends State<DistribusiChart> {
               const SizedBox(width: 6),
               Tooltip(
                 preferBelow: false,
-                message: '${data.kategori} (${Utils.toIDR(data.planned)})',
+                message: '${data.kategori} (${Utils.toIDR(data.total)})',
                 child: Text(
                   data.kategori,
                   style: const TextStyle(fontSize: 14),

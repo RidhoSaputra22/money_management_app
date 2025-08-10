@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'legend_item.dart';
+import '../../components/legend_item.dart';
 
 class LegendRow extends StatelessWidget {
   const LegendRow({super.key});

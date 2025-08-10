@@ -1,4 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:money_management_app/core/utils/utils.dart';
+import 'package:money_management_app/models/expense_model.dart';
+import 'package:money_management_app/models/income_model.dart';
+import 'package:money_management_app/services/expense_service.dart';
+import 'package:money_management_app/services/income_service.dart';
 import 'package:money_management_app/views/report/widgets/summary_info.dart';
 import 'package:money_management_app/widgets/custom_card.dart';
 
@@ -10,9 +16,26 @@ class RingkasanBulanIni extends StatefulWidget {
 }
 
 class _RingkasanBulanIniState extends State<RingkasanBulanIni> {
-  final monthlyIncome = [5, 6, 7];
-  final incomeData = [4200000, 4500000, 4700000];
-  final expenseData = [3200000, 3400000, 3600000];
+  double incomeTotal = 0;
+  double expenseTotal = 0;
+  bool isLoading = true;
+
+  Future<void> _fetchData() async {
+    final List<IncomeModel> incomeSnapshot = await IncomeService.fetchAll();
+    final List<ExpenseModel> expenseSnapshot = await ExpenseService.fetchAll();
+
+    setState(() {
+      incomeTotal = incomeSnapshot.fold(0, (sum, doc) => sum + doc.amount);
+      expenseTotal = expenseSnapshot.fold(0, (sum, doc) => sum + doc.amount);
+      isLoading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,23 +46,27 @@ class _RingkasanBulanIniState extends State<RingkasanBulanIni> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            SummaryInfo(
-              label: 'Pemasukan',
-              value: 'Rp${incomeData.last}',
-              color: Colors.green,
-            ),
-            const SizedBox(width: 24),
-            SummaryInfo(
-              label: 'Pengeluaran',
-              value: 'Rp${expenseData.last}',
-              color: Colors.red,
-            ),
-            const SizedBox(width: 24),
-            SummaryInfo(
-              label: 'Saldo',
-              value: 'Rp${incomeData.last - expenseData.last}',
-              color: Colors.blue,
-            ),
+            if (isLoading)
+              const CircularProgressIndicator()
+            else ...[
+              SummaryInfo(
+                label: 'Pemasukan',
+                value: Utils.toIDR(incomeTotal),
+                color: Colors.green,
+              ),
+              const SizedBox(width: 24),
+              SummaryInfo(
+                label: 'Pengeluaran',
+                value: Utils.toIDR(expenseTotal),
+                color: Colors.red,
+              ),
+              const SizedBox(width: 24),
+              SummaryInfo(
+                label: 'Saldo',
+                value: Utils.toIDR(incomeTotal - expenseTotal),
+                color: Colors.blue,
+              ),
+            ],
           ],
         ),
       ),

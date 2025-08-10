@@ -4,7 +4,7 @@ import 'package:money_management_app/services/auth_service.dart';
 import 'package:money_management_app/services/firestore_service.dart';
 
 class ExpenseService {
-  static Future<List<ExpenseModel>> fetchExpenses() async {
+  static Future<List<ExpenseModel>> fetchAll() async {
     try {
       final userId = await AuthService().getCurrentUserId();
       final snapshot = await FirebaseFirestore.instance
@@ -12,13 +12,10 @@ class ExpenseService {
           .where('userId', isEqualTo: userId)
           .get();
 
-      var kategoris = snapshot.docs
+      return snapshot.docs
           .map((doc) => ExpenseModel.fromMap(doc.data()))
           .toList();
-      print('Fetched ${kategoris} expenses for userId: $userId');
-      return kategoris;
     } catch (e) {
-      print('Error fetching expenses: ${e.toString()}');
       throw Exception('Failed to load expenses: ${e.toString()}');
     }
   }
@@ -54,6 +51,23 @@ class ExpenseService {
           .delete();
     } catch (e) {
       throw Exception('Failed to delete expense: ${e.toString()}');
+    }
+  }
+
+  static Future<List<ExpenseModel>> fetchByYear(int year) async {
+    try {
+      final start = DateTime(year, 1, 1);
+      final end = DateTime(year + 1, 1, 1);
+      final snapshot = await ExpenseService.fetchAll();
+
+      return snapshot.where((expense) {
+        final createAt = expense.createAt;
+        return createAt.isAfter(start) && createAt.isBefore(end);
+      }).toList();
+    } catch (e) {
+      throw Exception(
+        'Failed to load expenses for year $year: ${e.toString()}',
+      );
     }
   }
 }

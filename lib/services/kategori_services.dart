@@ -5,7 +5,9 @@ import 'package:money_management_app/models/kategori_model.dart';
 import 'package:money_management_app/services/auth_service.dart';
 
 class KategoriService {
-  static Future<List<KategoriModel>> fetchKategoris(String budgetId) async {
+  static Future<List<KategoriModel>> fetchKategorisByBudget(
+    String budgetId,
+  ) async {
     print('Fetching kategoris for budgetId: $budgetId');
     try {
       final userId = await AuthService().getCurrentUserId();
@@ -32,13 +34,7 @@ class KategoriService {
           .get();
 
       return snapshot.docs
-          .map(
-            (doc) => KategoriModel.fromMap({
-              ...doc.data(),
-              'id': doc.id,
-              'color': Utils.getRandomDistinctColor(),
-            }),
-          )
+          .map((doc) => KategoriModel.fromMap({...doc.data(), 'id': doc.id}))
           .toList();
     } catch (e) {
       throw Exception('Failed to load all kategoris: ${e.toString()}');

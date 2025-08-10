@@ -23,6 +23,7 @@ class _PemasukanPengeluaranChartState extends State<PemasukanPengeluaranChart> {
 
   String _viewType = 'Tahunan';
   int _selectedMonth = DateTime.now().month - 1;
+  int _selectedYear = DateTime.now().year;
 
   final List<String> _viewTypes = ['Tahunan', 'Bulanan'];
   final List<String> _months = Utils.getListMonthNames();
@@ -63,6 +64,10 @@ class _PemasukanPengeluaranChartState extends State<PemasukanPengeluaranChart> {
     if (value != null) setState(() => _selectedMonth = value);
   }
 
+  void _onYearChanged(int? value) {
+    if (value != null) setState(() => _selectedYear = value);
+  }
+
   @override
   Widget build(BuildContext context) {
     return CustomCard(
@@ -71,12 +76,14 @@ class _PemasukanPengeluaranChartState extends State<PemasukanPengeluaranChart> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           DropdownsRow(
+            selectedYear: _selectedYear,
             viewType: _viewType,
             selectedMonth: _selectedMonth,
             viewTypes: _viewTypes,
             months: _months,
             onViewTypeChanged: _onViewTypeChanged,
             onMonthChanged: _onMonthChanged,
+            onYearChanged: _onYearChanged,
           ),
           const SizedBox(height: 18),
           SizedBox(
@@ -86,11 +93,12 @@ class _PemasukanPengeluaranChartState extends State<PemasukanPengeluaranChart> {
                 : PemasukanPengeluaranBarChart(
                     viewType: _viewType,
                     selectedMonth: _selectedMonth,
+                    selectedYear: _selectedYear,
                     incomeData: _incomeData,
                     expenseData: _expenseData,
                   ),
           ),
-          const SizedBox(height: 100),
+          const SizedBox(height: 50),
           const LegendRow(),
         ],
       ),
