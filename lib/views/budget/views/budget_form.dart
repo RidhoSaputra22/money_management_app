@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:money_management_app/core/utils/utils.dart';
 import 'package:money_management_app/models/budget_model.dart';
+import 'package:money_management_app/services/auth_service.dart';
 import 'package:money_management_app/views/budget/blocs/budget_bloc.dart';
 import 'package:money_management_app/views/budget/blocs/budget_event.dart';
 import 'package:money_management_app/views/kategori/bloc/kategori_bloc.dart';
@@ -54,12 +55,13 @@ class _BudgetFormState extends State<BudgetForm> {
     }
   }
 
-  void _submit() {
+  void _submit() async {
     if (_formKey.currentState!.validate()) {
       final startAt = DateTime(_selectedYear, _selectedMonth, 1);
       final endAt = DateTime(_selectedYear, _selectedMonth + 1, 0);
       final budget = BudgetModel(
-        id: widget.budget?.id ?? Utils.generateUlid(),
+        userId: await AuthService().getCurrentUserId(),
+        id: widget.budget?.id,
         name: _nameController.text.trim(),
         amount: double.parse(_amountController.text.trim()),
         startAt: startAt,
@@ -79,7 +81,8 @@ class _BudgetFormState extends State<BudgetForm> {
 
   void _kategoriButtonPressed() async {
     BudgetModel budget = BudgetModel(
-      id: widget.budget?.id ?? Utils.generateUlid(),
+      userId: await AuthService().getCurrentUserId(),
+      id: widget.budget?.id,
       name: _nameController.text.trim(),
       amount: double.parse(_amountController.text.trim()),
       startAt: DateTime(_selectedYear, _selectedMonth, 1),
@@ -230,11 +233,6 @@ class _BudgetFormState extends State<BudgetForm> {
                   label: "Kategori",
                   onPressed: () {
                     _kategoriButtonPressed();
-                  },
-                ),
-                CancelButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
                   },
                 ),
               ],

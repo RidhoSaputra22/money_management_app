@@ -41,9 +41,6 @@ class _IncomeFormState extends State<IncomeForm> {
     super.initState();
     _sourceController.text = widget.income?.source ?? '';
     _amountController.text = widget.income?.amount.toString() ?? '';
-    // _selectedBudgetId =
-    //     widget.income?.budgetId ??
-    //     (widget.budgets.isNotEmpty ? widget.budgets.first.id : null);
   }
 
   void _submit() async {
@@ -55,11 +52,10 @@ class _IncomeFormState extends State<IncomeForm> {
       widget.onSubmit(
         IncomeModel(
           userId: userId,
-          id: widget.income?.id ?? Utils.generateUlid(),
+          id: widget.income?.id ?? '',
           source: source,
           amount: amount,
           createAt: DateTime.now(),
-          // budgetId: _selectedBudgetId ?? '',
         ),
       );
       _sourceController.clear();
@@ -74,25 +70,6 @@ class _IncomeFormState extends State<IncomeForm> {
       child: Column(
         spacing: spacing,
         children: [
-          // DropdownButtonFormField<String>(
-          //   decoration: const InputDecoration(labelText: 'Budget'),
-          //   // value: _selectedBudgetId,
-          //   items: widget.budgets
-          //       .map(
-          //         (budget) => DropdownMenuItem(
-          //           value: budget.id,
-          //           child: Text(budget.name),
-          //         ),
-          //       )
-          //       .toList(),
-          //   onChanged: (value) {
-          //     setState(() {
-          //       _selectedBudgetId = value;
-          //     });
-          //   },
-          //   validator: (value) =>
-          //       value == null || value.isEmpty ? 'Pilih budget' : null,
-          // ),
           Row(
             spacing: spacing,
             children: [

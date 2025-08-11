@@ -18,59 +18,73 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: const BottomNav(),
-      body: Column(
-        children: [
-          const HomeHeader(),
-          BlocListener<HomeBloc, HomeState>(
-            listener: (context, state) {
-              if (state is HomeError) {
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(SnackBar(content: Text(state.message)));
-              }
-            },
-            child: BlocBuilder<HomeBloc, HomeState>(
-              builder: (context, state) {
-                if (state is HomeInitial) {
-                  context.read<HomeBloc>().add(LoadHomeData());
-                  return const TransactionItemLoading();
-                }
-
-                if (state is HomeLoading) {
-                  return const TransactionItemLoading();
-                } else if (state is HomeLoaded) {
-                  return Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
-                      child: Column(
-                        children: [
-                          const HistoryHeader(),
-                          const SizedBox(height: 18),
-                          Expanded(
-                            child: ListView(
-                              children: state.transactions.map((transaction) {
-                                return TransactionItem(
-                                  title: transaction.source,
-                                  subtitle: Utils.timeAgo(transaction.createAt),
-                                  amount: transaction.amount,
-                                  type: transaction.type,
-                                );
-                              }).toList(),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                } else {
-                  return const Center(
-                    child: Text("Error loading transactions"),
-                  );
+      body: RefreshIndicator(
+        onRefresh: () async {
+          context.read<HomeBloc>().add(LoadHomeData());
+          await Future.delayed(const Duration(seconds: 1));
+        },
+        child: Column(
+          children: [
+            const HomeHeader(),
+            BlocListener<HomeBloc, HomeState>(
+              listener: (context, state) {
+                if (state is HomeError) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(state.message)));
                 }
               },
+              child: BlocBuilder<HomeBloc, HomeState>(
+                builder: (context, state) {
+                  if (state is HomeInitial) {
+                    context.read<HomeBloc>().add(LoadHomeData());
+                    return const TransactionItemLoading();
+                  }
+
+                  if (state is HomeLoading) {
+                    return const TransactionItemLoading();
+                  } else if (state is HomeLoaded) {
+                    return Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+                        child: Column(
+                          children: [
+                            const HistoryHeader(),
+                            const SizedBox(height: 18),
+                            Expanded(
+                              child: Container(
+                                child: ListView(
+                                  physics:
+                                      const AlwaysScrollableScrollPhysics(),
+                                  children: state.transactions.map((
+                                    transaction,
+                                  ) {
+                                    return TransactionItem(
+                                      title: transaction.source,
+                                      subtitle: Utils.timeAgo(
+                                        transaction.createAt,
+                                      ),
+                                      amount: transaction.amount,
+                                      type: transaction.type,
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  } else {
+                    return const Center(
+                      child: Text("Error loading transactions"),
+                    );
+                  }
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

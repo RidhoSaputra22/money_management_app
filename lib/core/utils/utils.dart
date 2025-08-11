@@ -17,11 +17,11 @@ class Utils {
     return formatter.format(date);
   }
 
-  static String generateUlid() {
-    final now = DateTime.now().millisecondsSinceEpoch;
-    final random = DateTime.now().microsecondsSinceEpoch.remainder(1000000);
-    return '${now.toRadixString(36)}${random.toRadixString(36).padLeft(6, '0')}';
-  }
+  // static String generateUlid() {
+  //   final now = DateTime.now().millisecondsSinceEpoch;
+  //   final random = DateTime.now().microsecondsSinceEpoch.remainder(1000000);
+  //   return '${now.toRadixString(36)}${random.toRadixString(36).padLeft(6, '0')}';
+  // }
 
   static int getRandomDistinctColor() {
     final colors = [

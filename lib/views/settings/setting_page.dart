@@ -1,12 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:money_management_app/views/settings/photo_form.dart';
-import 'package:money_management_app/views/shared/buttons/save_button.dart';
+import 'package:money_management_app/views/settings/avatars_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:money_management_app/core/theme/theme_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/services.dart';
 
 class SettingPage extends StatefulWidget {
   const SettingPage({super.key});
@@ -20,6 +16,8 @@ class _SettingPageState extends State<SettingPage> {
   final _nameController = TextEditingController();
   final _photoUrlController = TextEditingController();
 
+  String? _selectedAvatar;
+
   User? get user => FirebaseAuth.instance.currentUser;
 
   @override
@@ -27,32 +25,35 @@ class _SettingPageState extends State<SettingPage> {
     super.initState();
     _nameController.text = user?.displayName ?? '';
     _photoUrlController.text = user?.photoURL ?? '';
+    _selectedAvatar = user?.photoURL;
   }
 
-  _updateProfile() async {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return PhotoForm(
-          onImageSelected: (image) {
-            _photoUrlController.text = image!.path;
-          },
-        );
-      },
-    );
+  _onAvatarSelected(String avatar) {
+    setState(() {
+      _selectedAvatar = avatar;
+      _photoUrlController.text = avatar;
+    });
   }
 
   _submit() async {
     if (_formKey.currentState!.validate()) {
       // Update user profile
+      showDialog(
+        context: context,
+        builder: (_) {
+          return Center(child: CircularProgressIndicator());
+        },
+      );
       await user!.updateProfile(
         displayName: _nameController.text,
         photoURL: _photoUrlController.text,
       );
+
       // Show success message
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Profile updated successfully')));
+      Navigator.of(context).pop();
     }
   }
 
@@ -98,21 +99,11 @@ class _SettingPageState extends State<SettingPage> {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  SaveButton(
-                    label: 'Update Profile',
-                    onPressed: () {
-                      _updateProfile();
-                    },
+                  AvatarsPicker(
+                    avatars: ['avatars/avatar-1.png', 'avatars/avatar-2.png'],
+                    selectedAvatar: _selectedAvatar,
+                    onAvatarSelected: _onAvatarSelected,
                   ),
-                  const SizedBox(height: 12),
-                  if (_photoUrlController.text.isNotEmpty)
-                    Center(
-                      child: CircleAvatar(
-                        radius: 36,
-                        backgroundImage: NetworkImage(_photoUrlController.text),
-                        onBackgroundImageError: (_, __) {},
-                      ),
-                    ),
                   const SizedBox(height: 12),
                   ElevatedButton(
                     onPressed: _submit,

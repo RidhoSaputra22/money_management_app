@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 
 import 'package:money_management_app/models/kategori_model.dart';
 
@@ -13,6 +14,7 @@ class BudgetModel {
   final String range; // Tambahan: 'monthly', 'weekly', 'yearly', dll
   final String? description;
   final DateTime createdAt;
+  final String userId; // Tambahan: ID pengguna yang memiliki budget
   final List<KategoriModel>? kategoris;
 
   BudgetModel({
@@ -24,6 +26,7 @@ class BudgetModel {
     required this.endAt,
     this.range = 'bulanan', // default bulanan
     this.description,
+    required this.userId,
     this.kategoris,
   }) : createdAt = createdAt ?? DateTime.now();
 
@@ -36,6 +39,7 @@ class BudgetModel {
     String? range,
     ValueGetter<String?>? description,
     DateTime? createdAt,
+    String? userId,
     ValueGetter<List<KategoriModel>?>? kategoris,
   }) {
     return BudgetModel(
@@ -47,12 +51,14 @@ class BudgetModel {
       range: range ?? this.range,
       description: description != null ? description() : this.description,
       createdAt: createdAt ?? this.createdAt,
+      userId: userId ?? this.userId,
       kategoris: kategoris != null ? kategoris() : this.kategoris,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
+      // 'id': id,
       'name': name,
       'amount': amount,
       'startAt': startAt.millisecondsSinceEpoch,
@@ -60,7 +66,8 @@ class BudgetModel {
       'range': range,
       'description': description,
       'createdAt': createdAt.millisecondsSinceEpoch,
-      'kategoris': kategoris?.map((x) => x.toMap()).toList(),
+      'userId': userId,
+      'kategoris': kategoris?.map((x) => x?.toMap())?.toList(),
     };
   }
 
@@ -74,6 +81,7 @@ class BudgetModel {
       range: map['range'] ?? '',
       description: map['description'],
       createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt']),
+      userId: map['userId'] ?? '',
       kategoris: map['kategoris'] != null
           ? List<KategoriModel>.from(
               map['kategoris']?.map((x) => KategoriModel.fromMap(x)),
@@ -89,7 +97,7 @@ class BudgetModel {
 
   @override
   String toString() {
-    return 'BudgetModel(id: $id, name: $name, amount: $amount, startAt: $startAt, endAt: $endAt, range: $range, description: $description, createdAt: $createdAt, kategoris: $kategoris)';
+    return 'BudgetModel(id: $id, name: $name, amount: $amount, startAt: $startAt, endAt: $endAt, range: $range, description: $description, createdAt: $createdAt, userId: $userId, kategoris: $kategoris)';
   }
 
   @override
@@ -105,6 +113,7 @@ class BudgetModel {
         other.range == range &&
         other.description == description &&
         other.createdAt == createdAt &&
+        other.userId == userId &&
         listEquals(other.kategoris, kategoris);
   }
 
@@ -118,6 +127,7 @@ class BudgetModel {
         range.hashCode ^
         description.hashCode ^
         createdAt.hashCode ^
+        userId.hashCode ^
         kategoris.hashCode;
   }
 }

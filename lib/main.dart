@@ -1,4 +1,6 @@
+import 'package:file_picker/_internal/file_picker_web.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_management_app/views/budget/blocs/budget_bloc.dart';
 import 'package:money_management_app/views/expense/blocs/expense_bloc.dart';
@@ -18,8 +20,9 @@ import 'package:money_management_app/views/budget/views/budget_page.dart';
 import 'package:money_management_app/views/report/report_page.dart';
 import 'package:money_management_app/views/settings/setting_page.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:money_management_app/views/auth/auth_wrapper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
+import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 final routes = {
   // Remove '/' from here, we'll handle it in MaterialApp
@@ -37,8 +40,12 @@ final routes = {
 };
 
 void main() async {
+  if (kIsWeb) {
+    FilePickerWeb.registerWith(Registrar());
+  }
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('id_ID', null);
+
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(
     ChangeNotifierProvider(

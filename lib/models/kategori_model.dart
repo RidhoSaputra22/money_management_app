@@ -2,8 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/widgets.dart';
 
-import 'package:money_management_app/core/utils/utils.dart';
-
 class KategoriModel {
   String? id;
   String userId; // User ID for the owner of the category
@@ -103,20 +101,6 @@ class KategoriModel {
         planned.hashCode ^
         color.hashCode ^
         createdAt.hashCode;
-  }
-
-  static List<KategoriModel> get sampleData {
-    return [
-      KategoriModel(
-        id: Utils.generateUlid(),
-        userId: '1',
-        budgetId: Utils.generateUlid(),
-        kategori: 'Makanan',
-        color: const Color.fromARGB(255, 0, 0, 0),
-        planned: 100000,
-        createdAt: DateTime.now(),
-      ),
-    ];
   }
 
   static KategoriModel clone(KategoriModel k) {

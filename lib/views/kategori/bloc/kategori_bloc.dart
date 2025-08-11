@@ -88,10 +88,13 @@ class KategoriBloc extends Bloc<KategoriEvent, KategoriState> {
     return getTotalPlanned() == budget.amount;
   }
 
-  bool isKategoriMoreThanBudgetAmount(
-    KategoriModel kategori,
-    BudgetModel budget,
-  ) {
-    return getTotalPlanned() + kategori.planned > budget.amount;
+  bool isKategoriMoreThanBudgetAmount({
+    required bool isEditing,
+    required KategoriModel kategori,
+    required BudgetModel budget,
+  }) {
+    return isEditing
+        ? getTotalPlanned() > budget.amount
+        : getTotalPlanned() + kategori.planned > budget.amount;
   }
 }

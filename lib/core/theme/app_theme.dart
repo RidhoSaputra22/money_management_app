@@ -4,6 +4,18 @@ import 'package:google_fonts/google_fonts.dart';
 class AppTheme {
   static final ThemeData lightTheme = ThemeData(
     primarySwatch: Colors.teal,
+    textTheme: GoogleFonts.interTextTheme().copyWith(
+      displaySmall: TextStyle(
+        color: Colors.black54,
+        fontSize: 8,
+        fontWeight: FontWeight.w400,
+      ),
+      headlineSmall: TextStyle(
+        color: Colors.black87,
+        fontSize: 8,
+        fontWeight: FontWeight.w500,
+      ),
+    ),
 
     dropdownMenuTheme: DropdownMenuThemeData(
       textStyle: GoogleFonts.inter(
@@ -66,7 +78,6 @@ class AppTheme {
     ),
 
     iconTheme: const IconThemeData(color: Colors.white),
-    textTheme: GoogleFonts.interTextTheme(),
     appBarTheme: AppBarTheme(
       backgroundColor: const Color(0xFF43A6A5), // Primary color updated
       elevation: 0,

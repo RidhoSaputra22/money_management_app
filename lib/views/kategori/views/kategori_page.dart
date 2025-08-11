@@ -39,8 +39,9 @@ class _KategoriPageState extends State<KategoriPage> {
             ),
             onSubmit: (kategori) {
               if (context.read<KategoriBloc>().isKategoriMoreThanBudgetAmount(
-                kategori,
-                widget.budget,
+                isEditing: false,
+                kategori: kategori,
+                budget: widget.budget,
               )) {
                 WarningAlert.show(
                   context: context,
@@ -84,8 +85,9 @@ class _KategoriPageState extends State<KategoriPage> {
             kategori: kategori,
             onSubmit: (updatedKategori) {
               if (context.read<KategoriBloc>().isKategoriMoreThanBudgetAmount(
-                kategori,
-                widget.budget,
+                isEditing: true,
+                kategori: updatedKategori,
+                budget: widget.budget,
               )) {
                 WarningAlert.show(
                   context: context,
@@ -219,6 +221,7 @@ class _KategoriPageState extends State<KategoriPage> {
             final budget = budgets.firstWhere(
               (b) => b.id == entry.value,
               orElse: () => BudgetModel(
+                userId: '',
                 id: '',
                 name: 'Semua',
                 amount: 0,
@@ -294,9 +297,9 @@ class _KategoriPageState extends State<KategoriPage> {
           subtitle: Utils.formatDateIndonesian(item.createdAt as DateTime),
           trailingText: Utils.toIDR(item.planned),
           leadingIcon: Icons.attach_money,
-          leadingColor: Colors.green,
-          iconColor: Colors.green,
-          trailingColor: Colors.green,
+          leadingColor: item.color ?? Colors.teal,
+          iconColor: item.color ?? Colors.green,
+          trailingColor: item.color ?? Colors.green,
           action: IconButton(
             icon: const Icon(Icons.delete, color: Colors.red),
             onPressed: () {
@@ -330,7 +333,7 @@ class _KategoriPageState extends State<KategoriPage> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.message),
-                duration: const Duration(seconds: 2),
+                duration: const Duration(seconds: 2000),
               ),
             );
           }

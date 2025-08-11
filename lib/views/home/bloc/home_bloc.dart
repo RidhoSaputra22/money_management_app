@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
 import 'package:money_management_app/models/expense_model.dart';
 import 'package:money_management_app/models/income_model.dart';
 import 'package:money_management_app/models/transaction_model.dart';
@@ -53,7 +52,5 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   String get userName => AuthService().currentUser?.displayName ?? "Unknown";
-  String get avatar =>
-      AuthService().currentUser?.photoURL ??
-      "https://example.com/default_avatar.png";
+  String get avatar => AuthService().currentUser!.photoURL!;
 }

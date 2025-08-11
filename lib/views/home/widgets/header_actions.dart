@@ -16,21 +16,26 @@ class HeaderActions extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 24,
-              backgroundImage: NetworkImage(context.read<HomeBloc>().avatar),
+              backgroundImage: AssetImage(context.read<HomeBloc>().avatar),
             ),
             const Spacer(),
-            CircleIconButton(icon: Icons.notifications_none, onPressed: () {}),
-            CircleIconButton(
-              icon: Icons.settings,
-              onPressed: () {
-                Navigator.pushNamed(context, '/settings');
-              },
+            Tooltip(
+              message: "Pengaturan",
+              child: CircleIconButton(
+                icon: Icons.settings,
+                onPressed: () {
+                  Navigator.pushNamed(context, '/settings');
+                },
+              ),
             ),
-            CircleIconButton(
-              icon: Icons.logout,
-              onPressed: () {
-                Navigator.pushNamed(context, '/logout');
-              },
+            Tooltip(
+              message: "Keluar",
+              child: CircleIconButton(
+                icon: Icons.logout,
+                onPressed: () {
+                  Navigator.pushNamed(context, '/logout');
+                },
+              ),
             ),
           ],
         );

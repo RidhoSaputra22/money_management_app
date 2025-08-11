@@ -1,13 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:money_management_app/models/budget_model.dart';
 import 'package:money_management_app/models/kategori_model.dart';
+import 'package:money_management_app/services/auth_service.dart';
 import 'package:money_management_app/services/kategori_services.dart';
 
 class BudgetService {
   static Future<List<BudgetModel>> fetchBudgetsWithKategoris() async {
     try {
+      final userId = await AuthService().getCurrentUserId();
       final budgets = await FirebaseFirestore.instance
           .collection('budgets')
+          .where('userId', isEqualTo: userId)
           .get();
 
       var budgetsWithKategoris = await Future.wait(
@@ -21,6 +24,7 @@ class BudgetService {
           });
         }).toList(),
       );
+      print('Budgets with Kategoris: $budgetsWithKategoris');
       return budgetsWithKategoris;
     } catch (e) {
       throw Exception('Failed to load budgets: ${e.toString()}');
@@ -29,8 +33,10 @@ class BudgetService {
 
   static Future<List<BudgetModel>> fetchAll() async {
     try {
+      final userId = await AuthService().getCurrentUserId();
       final budgets = await FirebaseFirestore.instance
           .collection('budgets')
+          .where('userId', isEqualTo: userId)
           .get();
 
       return budgets.docs.map((doc) {

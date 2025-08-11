@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class AddButton extends StatelessWidget {
-  const AddButton({super.key});
+  final Function onPressed;
+  const AddButton({super.key, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +14,7 @@ class AddButton extends StatelessWidget {
       ),
       child: IconButton(
         icon: const Icon(Icons.add, color: Color(0xFF1B233A)),
-        onPressed: () {},
+        onPressed: () => onPressed(),
       ),
     );
   }

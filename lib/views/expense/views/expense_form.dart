@@ -68,7 +68,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
 
       widget.onSubmit(
         ExpenseModel(
-          id: widget.expense?.id ?? Utils.generateUlid(),
+          id: widget.expense?.id ?? '',
           kategoriId: _selectedKategori!.id!,
           budgetId: _selectedBudgetId!,
           userId: userId,

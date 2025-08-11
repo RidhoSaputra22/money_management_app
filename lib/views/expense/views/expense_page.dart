@@ -192,6 +192,7 @@ class ExpensePage extends StatelessWidget {
             final budget = budgets.firstWhere(
               (b) => b.id == entry.value,
               orElse: () => BudgetModel(
+                userId: '',
                 id: '',
                 name: 'Semua',
                 amount: 0,

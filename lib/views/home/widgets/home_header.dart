@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_management_app/core/utils/utils.dart';
 import 'package:money_management_app/views/home/bloc/home_bloc.dart';
 import 'package:money_management_app/views/home/bloc/home_state.dart';
-import '../../shared/bottom_nav.dart';
 import 'header_actions.dart';
 import 'add_button.dart';
 
@@ -58,7 +57,11 @@ class HomeHeader extends StatelessWidget {
               ],
             ),
             const Spacer(),
-            const AddButton(),
+            AddButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/income');
+              },
+            ),
           ],
         ),
       ],
@@ -104,7 +107,11 @@ class HomeHeader extends StatelessWidget {
               ],
             ),
             const Spacer(),
-            const AddButton(),
+            AddButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/income');
+              },
+            ),
           ],
         ),
       ],
@@ -169,7 +176,11 @@ class HomeHeader extends StatelessWidget {
                       ],
                     ),
                     const Spacer(),
-                    const AddButton(),
+                    AddButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/income');
+                      },
+                    ),
                   ],
                 ),
               ],

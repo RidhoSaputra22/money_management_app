@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 import 'package:money_management_app/models/kategori_model.dart';
 import 'package:money_management_app/services/auth_service.dart';
@@ -20,6 +21,7 @@ class _KategoriFormState extends State<KategoriForm> {
   final _formKey = GlobalKey<FormState>();
   final _kategoriController = TextEditingController();
   final _plannedController = TextEditingController();
+  Color? _selectedColor;
 
   double spacing = 12.0;
 
@@ -35,6 +37,7 @@ class _KategoriFormState extends State<KategoriForm> {
     super.initState();
     _kategoriController.text = widget.kategori?.kategori ?? '';
     _plannedController.text = widget.kategori?.planned.toString() ?? '';
+    _selectedColor = widget.kategori?.color ?? Colors.grey[300];
   }
 
   void _submit() async {
@@ -45,15 +48,19 @@ class _KategoriFormState extends State<KategoriForm> {
 
       widget.onSubmit(
         KategoriModel(
+          id: widget.kategori?.id,
           userId: userId,
           kategori: kategori,
           planned: planned,
           createdAt: DateTime.now(),
+          color: _selectedColor ?? const Color(0xFF000000),
           budgetId: widget.kategori!.budgetId,
         ),
       );
-      _kategoriController.clear();
-      _plannedController.clear();
+      if (widget.kategori == null) {
+        _kategoriController.clear();
+        _plannedController.clear();
+      }
     }
   }
 
@@ -64,33 +71,65 @@ class _KategoriFormState extends State<KategoriForm> {
       child: Column(
         spacing: spacing,
         children: [
+          TextFormField(
+            decoration: const InputDecoration(labelText: 'Kategori'),
+            controller: _kategoriController,
+            validator: (value) => value == null || value.trim().isEmpty
+                ? 'Kategori wajib diisi'
+                : null,
+          ),
+          TextFormField(
+            decoration: const InputDecoration().copyWith(labelText: 'Jumlah'),
+            controller: _plannedController,
+            keyboardType: TextInputType.number,
+            validator: (value) {
+              if (value == null || value.trim().isEmpty)
+                return 'Jumlah wajib diisi';
+              final numValue = int.tryParse(value.trim());
+              if (numValue == null || numValue <= 0) return 'Jumlah harus > 0';
+
+              if (numValue > widget.kategori!.planned &&
+                  widget.kategori!.id != null)
+                return 'Jumlah tidak boleh lebih besar dari sisa anggaran';
+              return null;
+            },
+          ),
           Row(
             spacing: spacing,
             children: [
               Expanded(
-                child: TextFormField(
-                  decoration: const InputDecoration(labelText: 'Kategori'),
-                  controller: _kategoriController,
-                  validator: (value) => value == null || value.trim().isEmpty
-                      ? 'Kategori wajib diisi'
-                      : null,
-                ),
-              ),
-              Expanded(
-                child: TextFormField(
-                  decoration: const InputDecoration().copyWith(
-                    labelText: 'Jumlah',
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: _selectedColor ?? Colors.grey[300],
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
                   ),
-                  controller: _plannedController,
-                  keyboardType: TextInputType.number,
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty)
-                      return 'Jumlah wajib diisi';
-                    final numValue = int.tryParse(value.trim());
-                    if (numValue == null || numValue <= 0)
-                      return 'Jumlah harus > 0';
-                    return null;
+                  onPressed: () async {
+                    final color = await showDialog<Color>(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Pilih Warna'),
+                        content: SingleChildScrollView(
+                          child: BlockPicker(
+                            pickerColor: _selectedColor ?? Colors.grey[300]!,
+                            onColorChanged: (color) {
+                              Navigator.of(context).pop(color);
+                            },
+                          ),
+                        ),
+                      ),
+                    );
+                    if (color != null) {
+                      setState(() {
+                        _selectedColor = color;
+                      });
+                    }
                   },
+                  child: Text(
+                    'Pilih Warna',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
             ],
