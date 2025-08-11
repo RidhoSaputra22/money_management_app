@@ -295,11 +295,8 @@ class _KategoriPageState extends State<KategoriPage> {
           onTap: () => _editKategori(context, item),
           title: item.kategori,
           subtitle: Utils.formatDateIndonesian(item.createdAt as DateTime),
-          trailingText: Utils.toIDR(item.planned),
-          leadingIcon: Icons.attach_money,
-          leadingColor: item.color ?? Colors.teal,
-          iconColor: item.color ?? Colors.green,
-          trailingColor: item.color ?? Colors.green,
+          amount: item.planned,
+          type: 'expense',
           action: IconButton(
             icon: const Icon(Icons.delete, color: Colors.red),
             onPressed: () {

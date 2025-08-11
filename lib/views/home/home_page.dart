@@ -26,26 +26,26 @@ class HomePage extends StatelessWidget {
         child: Column(
           children: [
             const HomeHeader(),
-            BlocListener<HomeBloc, HomeState>(
-              listener: (context, state) {
-                if (state is HomeError) {
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text(state.message)));
-                }
-              },
-              child: BlocBuilder<HomeBloc, HomeState>(
-                builder: (context, state) {
-                  if (state is HomeInitial) {
-                    context.read<HomeBloc>().add(LoadHomeData());
-                    return const TransactionItemLoading();
+            Expanded(
+              child: BlocListener<HomeBloc, HomeState>(
+                listener: (context, state) {
+                  if (state is HomeError) {
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text(state.message)));
                   }
+                },
+                child: BlocBuilder<HomeBloc, HomeState>(
+                  builder: (context, state) {
+                    if (state is HomeInitial) {
+                      context.read<HomeBloc>().add(LoadHomeData());
+                      return const TransactionItemLoading();
+                    }
 
-                  if (state is HomeLoading) {
-                    return const TransactionItemLoading();
-                  } else if (state is HomeLoaded) {
-                    return Expanded(
-                      child: Padding(
+                    if (state is HomeLoading) {
+                      return const TransactionItemLoading();
+                    } else if (state is HomeLoaded) {
+                      return Padding(
                         padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
                         child: Column(
                           children: [
@@ -68,14 +68,14 @@ class HomePage extends StatelessWidget {
                             ),
                           ],
                         ),
-                      ),
-                    );
-                  } else {
-                    return const Center(
-                      child: Text("Error loading transactions"),
-                    );
-                  }
-                },
+                      );
+                    } else {
+                      return const Center(
+                        child: Text("Error loading transactions"),
+                      );
+                    }
+                  },
+                ),
               ),
             ),
           ],

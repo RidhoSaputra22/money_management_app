@@ -99,38 +99,44 @@ class _KategoriPengeluaranState extends State<KategoriPengeluaran> {
         children: [
           const SizedBox(height: 18),
           isLoading ? CircularProgressIndicator() : SizedBox.shrink(),
-          ...categoryData
-              .toList()
-              .where((d) => (d.total as num) > 0)
-              .toList()
-              .map(
-                (data) => Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 12,
-                        height: 12,
-                        decoration: BoxDecoration(
-                          color: data.color,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Tooltip(
-                          message: data.budget,
-                          child: Text(
-                            data.kategori,
-                            overflow: TextOverflow.ellipsis,
+          ...isLoading
+              ? []
+              : categoryData.isEmpty
+              ? [const Text('Tidak ada data')]
+              : [
+                  ...categoryData
+                      .toList()
+                      .where((d) => (d.total as num) > 0)
+                      .toList()
+                      .map(
+                        (data) => Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 12,
+                                height: 12,
+                                decoration: BoxDecoration(
+                                  color: data.color,
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Tooltip(
+                                  message: data.budget,
+                                  child: Text(
+                                    data.kategori,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ),
+                              Text(Utils.toIDR(data.total)),
+                            ],
                           ),
                         ),
                       ),
-                      Text(Utils.toIDR(data.total)),
-                    ],
-                  ),
-                ),
-              ),
+                ],
         ],
       ),
     );

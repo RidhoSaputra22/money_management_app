@@ -35,23 +35,21 @@ class HomeHeader extends StatelessWidget {
               children: [
                 FadeTransition(
                   opacity: AlwaysStoppedAnimation(1.0),
-                  child: Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          height: 16,
-                          width: 40,
-                          color: Colors.grey.shade300,
-                        ),
-                        const SizedBox(height: 8),
-                        Container(
-                          height: 12,
-                          width: 80,
-                          color: Colors.grey.shade300,
-                        ),
-                      ],
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        height: 16,
+                        width: 40,
+                        color: Colors.grey.shade300,
+                      ),
+                      const SizedBox(height: 8),
+                      Container(
+                        height: 12,
+                        width: 80,
+                        color: Colors.grey.shade300,
+                      ),
+                    ],
                   ),
                 ),
               ],

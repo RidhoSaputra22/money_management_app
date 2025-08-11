@@ -1,88 +1,108 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:flutter/material.dart';
 
+import 'package:money_management_app/core/utils/utils.dart';
+
 class ListCard extends StatelessWidget {
-  final VoidCallback onTap;
   final String title;
   final String subtitle;
-  final String trailingText;
-  final IconData leadingIcon;
-  final Color leadingColor;
-  final Color iconColor;
-  final Color trailingColor;
-  final Widget? action; // Tambahkan parameter action
+  final double amount;
+  final String type;
+  final VoidCallback? onTap;
+  final Widget? action;
 
   const ListCard({
-    super.key,
-    required this.onTap,
+    Key? key,
     required this.title,
     required this.subtitle,
-    required this.trailingText,
-    this.leadingIcon = Icons.attach_money,
-    this.leadingColor = const Color(0xFF4CAF50),
-    this.iconColor = Colors.green,
-    this.trailingColor = Colors.green,
-    this.action, // Tambahkan ke konstruktor
-  });
+    required this.amount,
+    required this.type,
+    this.onTap,
+    this.action,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: ListTile(
-        onTap: onTap,
-        leading: CircleAvatar(
-          backgroundColor: leadingColor.withOpacity(0.15),
-          child: Icon(leadingIcon, color: iconColor),
-        ),
-        title: Text(
-          title,
-          style: const TextStyle(
-            fontWeight: FontWeight.w600,
-            color: Color(0xFF1B233A),
-          ),
-        ),
-        subtitle: Text(
-          subtitle,
-          style: const TextStyle(color: Colors.grey, fontSize: 13),
-        ),
-        trailing: action != null
-            ? Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    trailingText,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: trailingColor,
-                      fontSize: 16,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  action!,
-                ],
-              )
-            : Text(
-                trailingText,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: trailingColor,
-                  fontSize: 16,
-                ),
+    return Stack(
+      children: [
+        Container(
+          margin: const EdgeInsets.only(bottom: 22),
+          padding: const EdgeInsets.all(18),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(18),
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 8,
+                offset: Offset(0, 2),
               ),
-      ),
+            ],
+          ),
+          child: InkWell(
+            onTap: onTap,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: Color(0xFF1B233A),
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      subtitle,
+                      style: const TextStyle(
+                        color: Colors.teal,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const Spacer(),
+                    Text(
+                      Utils.toIDR(amount),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: type == 'income' ? Colors.green : Colors.red,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+              ],
+            ),
+          ),
+        ),
+
+        Positioned(
+          right: 0,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            decoration: BoxDecoration(
+              color: type == 'income' ? Colors.green : Colors.red,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(12),
+                topRight: Radius.circular(12),
+              ),
+            ),
+            child: Text(
+              type == 'income' ? 'Pemasukan' : 'Pengeluaran',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -52,5 +52,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   String get userName => AuthService().currentUser?.displayName ?? "Unknown";
-  String get avatar => AuthService().currentUser!.photoURL!;
+  String get avatar =>
+      AuthService().currentUser?.photoURL ?? "assets/avatars/avatar-1.png";
 }

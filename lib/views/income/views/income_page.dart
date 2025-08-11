@@ -260,11 +260,8 @@ class IncomePage extends StatelessWidget {
           onTap: () => _editIncome(context, item, budgets),
           title: item.source,
           subtitle: Utils.formatDateIndonesian(item.createAt),
-          trailingText: Utils.toIDR(item.amount),
-          leadingIcon: Icons.attach_money,
-          leadingColor: Colors.green,
-          iconColor: Colors.green,
-          trailingColor: Colors.green,
+          amount: item.amount,
+          type: 'Income',
           action: IconButton(
             icon: const Icon(Icons.delete, color: Colors.red),
             onPressed: () {

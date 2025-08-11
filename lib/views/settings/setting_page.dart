@@ -102,7 +102,10 @@ class _SettingPageState extends State<SettingPage> {
                   ),
                   const SizedBox(height: 12),
                   AvatarsPicker(
-                    avatars: ['avatars/avatar-1.png', 'avatars/avatar-2.png'],
+                    avatars: [
+                      'assets/avatars/avatar-1.png',
+                      'assets/avatars/avatar-2.png',
+                    ],
                     selectedAvatar: _selectedAvatar,
                     onAvatarSelected: _onAvatarSelected,
                   ),

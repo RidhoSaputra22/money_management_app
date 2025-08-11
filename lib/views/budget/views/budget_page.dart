@@ -38,7 +38,7 @@ class BudgetPage extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context, int totalBudget) {
+  Widget _buildHeader(BuildContext context, double totalBudget) {
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.fromLTRB(24, 24, 24, 0),
@@ -114,7 +114,8 @@ class BudgetPage extends StatelessWidget {
                     onTap: () => _showBudgetForm(context, budget: item),
                     title: item.name,
                     subtitle: Utils.formatDateIndonesian(item.startAt),
-                    trailingText: Utils.toIDR(item.amount.toDouble()),
+                    amount: item.amount,
+                    type: 'Budget',
                     action: IconButton(
                       icon: const Icon(Icons.delete, color: Colors.red),
                       onPressed: () {
@@ -145,9 +146,9 @@ class BudgetPage extends StatelessWidget {
 
     if (state is BudgetLoaded) {
       final budgets = state.budgets;
-      final totalBudget = budgets.fold<int>(
+      final totalBudget = budgets.fold<double>(
         0,
-        (sum, item) => sum + (item.amount as int),
+        (sum, item) => sum + (item.amount),
       );
       return Column(
         children: [

@@ -72,6 +72,13 @@ class _DistribusiChartState extends State<DistribusiChart> {
           )
           .toList();
 
+      if (data.isEmpty) {
+        setState(() {
+          isError = true;
+          isLoading = false;
+        });
+      }
+
       setState(() {
         data = distribusiDataList;
         isLoading = false;
@@ -105,6 +112,11 @@ class _DistribusiChartState extends State<DistribusiChart> {
             value: ((kategori.total) as num).toDouble(),
             color: kategori.color,
             title: '$percent%',
+            titleStyle: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
             radius: 50,
           );
         }).toList(),
@@ -165,6 +177,10 @@ class _DistribusiChartState extends State<DistribusiChart> {
             height: 180,
             child: isLoading
                 ? const Center(child: CircularProgressIndicator())
+                : isError
+                ? const Center(child: Text('Gagal memuat data'))
+                : data.isEmpty
+                ? const Center(child: Text('Tidak ada data'))
                 : _buildPieChart(),
           ),
           const SizedBox(height: 18),

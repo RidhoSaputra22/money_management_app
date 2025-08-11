@@ -266,11 +266,8 @@ class ExpensePage extends StatelessWidget {
           onTap: () => _editExpense(context, item, budgets),
           title: item.source,
           subtitle: Utils.formatDateIndonesian(item.createAt),
-          trailingText: Utils.toIDR(item.amount),
-          leadingIcon: Icons.attach_money,
-          leadingColor: Colors.green,
-          iconColor: Colors.green,
-          trailingColor: Colors.green,
+          amount: item.amount,
+          type: 'Expense',
           action: IconButton(
             icon: const Icon(Icons.delete, color: Colors.red),
             onPressed: () {
