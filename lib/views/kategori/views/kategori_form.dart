@@ -83,14 +83,16 @@ class _KategoriFormState extends State<KategoriForm> {
             controller: _plannedController,
             keyboardType: TextInputType.number,
             validator: (value) {
-              if (value == null || value.trim().isEmpty)
+              if (value == null || value.trim().isEmpty) {
                 return 'Jumlah wajib diisi';
+              }
               final numValue = int.tryParse(value.trim());
               if (numValue == null || numValue <= 0) return 'Jumlah harus > 0';
 
               if (numValue > widget.kategori!.planned &&
-                  widget.kategori!.id != null)
+                  widget.kategori!.id != null) {
                 return 'Jumlah tidak boleh lebih besar dari sisa anggaran';
+              }
               return null;
             },
           ),

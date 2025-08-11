@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:money_management_app/core/utils/utils.dart';
 import 'package:money_management_app/models/income_model.dart';
 import 'package:money_management_app/services/auth_service.dart';
 import 'package:money_management_app/models/budget_model.dart';
@@ -90,11 +89,13 @@ class _IncomeFormState extends State<IncomeForm> {
                   controller: _amountController,
                   keyboardType: TextInputType.number,
                   validator: (value) {
-                    if (value == null || value.trim().isEmpty)
+                    if (value == null || value.trim().isEmpty) {
                       return 'Jumlah wajib diisi';
+                    }
                     final numValue = int.tryParse(value.trim());
-                    if (numValue == null || numValue <= 0)
+                    if (numValue == null || numValue <= 0) {
                       return 'Jumlah harus > 0';
+                    }
                     return null;
                   },
                 ),

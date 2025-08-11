@@ -6,7 +6,6 @@ class KategoriService {
   static Future<List<KategoriModel>> fetchKategorisByBudget(
     String budgetId,
   ) async {
-    print('Fetching kategoris for budgetId: $budgetId');
     try {
       final userId = await AuthService().getCurrentUserId();
       final snapshot = await FirebaseFirestore.instance
@@ -63,7 +62,6 @@ class KategoriService {
 
   static Future<void> deleteKategori(KategoriModel kategori) async {
     try {
-      print('Deleting kategori: ${kategori.id}');
       await FirebaseFirestore.instance
           .collection('kategoris')
           .doc(kategori.id)

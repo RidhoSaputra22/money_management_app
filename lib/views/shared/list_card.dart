@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 
 class ListCard extends StatelessWidget {
@@ -12,7 +14,7 @@ class ListCard extends StatelessWidget {
   final Widget? action; // Tambahkan parameter action
 
   const ListCard({
-    Key? key,
+    super.key,
     required this.onTap,
     required this.title,
     required this.subtitle,
@@ -22,7 +24,7 @@ class ListCard extends StatelessWidget {
     this.iconColor = Colors.green,
     this.trailingColor = Colors.green,
     this.action, // Tambahkan ke konstruktor
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

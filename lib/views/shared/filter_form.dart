@@ -9,11 +9,11 @@ class FilterForm extends StatefulWidget {
   final List<BudgetModel>? budgets;
 
   const FilterForm({
-    Key? key,
+    super.key,
     required this.onFilter,
     this.budgets,
     this.filter,
-  }) : super(key: key);
+  });
 
   @override
   State<FilterForm> createState() => _FilterFormState();

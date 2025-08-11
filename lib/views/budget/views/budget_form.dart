@@ -1,14 +1,14 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:money_management_app/core/utils/utils.dart';
 import 'package:money_management_app/models/budget_model.dart';
 import 'package:money_management_app/services/auth_service.dart';
 import 'package:money_management_app/views/budget/blocs/budget_bloc.dart';
 import 'package:money_management_app/views/budget/blocs/budget_event.dart';
 import 'package:money_management_app/views/kategori/bloc/kategori_bloc.dart';
 import 'package:money_management_app/views/kategori/views/kategori_page.dart';
-import 'package:money_management_app/views/shared/buttons/cancel_button.dart';
 import 'package:money_management_app/views/shared/buttons/edit_button.dart';
 import 'package:money_management_app/views/shared/buttons/save_button.dart';
 
@@ -141,8 +141,9 @@ class _BudgetFormState extends State<BudgetForm> {
               ),
             ),
             validator: (value) {
-              if (value == null || value.trim().isEmpty)
+              if (value == null || value.trim().isEmpty) {
                 return 'Jumlah wajib diisi';
+              }
               final numValue = double.tryParse(value.trim());
               if (numValue == null || numValue <= 0) return 'Jumlah harus > 0';
               return null;

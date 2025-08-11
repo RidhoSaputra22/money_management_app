@@ -52,23 +52,18 @@ class HomePage extends StatelessWidget {
                             const HistoryHeader(),
                             const SizedBox(height: 18),
                             Expanded(
-                              child: Container(
-                                child: ListView(
-                                  physics:
-                                      const AlwaysScrollableScrollPhysics(),
-                                  children: state.transactions.map((
-                                    transaction,
-                                  ) {
-                                    return TransactionItem(
-                                      title: transaction.source,
-                                      subtitle: Utils.timeAgo(
-                                        transaction.createAt,
-                                      ),
-                                      amount: transaction.amount,
-                                      type: transaction.type,
-                                    );
-                                  }).toList(),
-                                ),
+                              child: ListView(
+                                physics: const AlwaysScrollableScrollPhysics(),
+                                children: state.transactions.map((transaction) {
+                                  return TransactionItem(
+                                    title: transaction.source,
+                                    subtitle: Utils.timeAgo(
+                                      transaction.createAt,
+                                    ),
+                                    amount: transaction.amount,
+                                    type: transaction.type,
+                                  );
+                                }).toList(),
                               ),
                             ),
                           ],

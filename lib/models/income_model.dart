@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 class IncomeModel {
   final String id;
   final double amount;
@@ -68,11 +66,6 @@ class IncomeModel {
       description: map['description'] ?? '',
     );
   }
-
-  String toJson() => json.encode(toMap());
-
-  factory IncomeModel.fromJson(String source) =>
-      IncomeModel.fromMap(json.decode(source));
 
   IncomeModel copyWith({
     String? id,

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 class ExpenseModel {
   final String id;
   final double amount;
@@ -61,16 +59,6 @@ class ExpenseModel {
       kategoriId: map['kategoriId'] ?? '',
       userId: map['userId'] ?? '',
     );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory ExpenseModel.fromJson(String source) =>
-      ExpenseModel.fromMap(json.decode(source));
-
-  @override
-  String toString() {
-    return 'ExpenseModel(id: $id, amount: $amount, source: $source, createAt: $createAt, budgetId: $budgetId, kategoriId: $kategoriId, userId: $userId)';
   }
 
   @override

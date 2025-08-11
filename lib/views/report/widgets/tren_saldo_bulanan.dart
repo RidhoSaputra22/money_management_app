@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:money_management_app/core/utils/utils.dart';
@@ -105,7 +103,7 @@ class _TrenSaldoBulananState extends State<TrenSaldoBulanan> {
                                   );
                                   final saldo = touchedSpot.y;
                                   return LineTooltipItem(
-                                    '${month}\n${Utils.toIDR(saldo)}',
+                                    '$month\n${Utils.toIDR(saldo)}',
                                     TextStyle(color: Colors.white),
                                   );
                                 }).toList(),
@@ -130,7 +128,7 @@ class _TrenSaldoBulananState extends State<TrenSaldoBulanan> {
                                 return Transform.rotate(
                                   alignment: Alignment.topCenter,
                                   origin: Offset(20, 50),
-                                  angle: -45 * math.pi / 180,
+                                  angle: -45 * 3.14 / 180,
                                   child: Text(
                                     Utils.getMonthName(value.toInt()),
                                     style: TextStyle(fontSize: 12),

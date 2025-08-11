@@ -15,7 +15,6 @@ class IncomeService {
           .map((doc) => IncomeModel.fromMap(doc.data()))
           .toList();
     } catch (e) {
-      print('Error fetching incomes: ${e.toString()}');
       throw Exception('Failed to load incomes: ${e.toString()}');
     }
   }

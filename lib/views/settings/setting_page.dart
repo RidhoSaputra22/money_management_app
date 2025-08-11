@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:money_management_app/views/settings/avatars_picker.dart';
 import 'package:provider/provider.dart';
@@ -60,7 +62,7 @@ class _SettingPageState extends State<SettingPage> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
-    ThemeMode _themeMode = themeProvider.themeMode;
+    ThemeMode themeMode = themeProvider.themeMode;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Pengaturan')),
@@ -123,7 +125,7 @@ class _SettingPageState extends State<SettingPage> {
               title: const Text('Terang'),
               leading: Radio<ThemeMode>(
                 value: ThemeMode.light,
-                groupValue: _themeMode,
+                groupValue: themeMode,
                 onChanged: (mode) {
                   themeProvider.setThemeMode(mode!);
                 },
@@ -133,7 +135,7 @@ class _SettingPageState extends State<SettingPage> {
               title: const Text('Gelap'),
               leading: Radio<ThemeMode>(
                 value: ThemeMode.dark,
-                groupValue: _themeMode,
+                groupValue: themeMode,
                 onChanged: (mode) {
                   themeProvider.setThemeMode(mode!);
                 },
@@ -143,7 +145,7 @@ class _SettingPageState extends State<SettingPage> {
               title: const Text('Sistem'),
               leading: Radio<ThemeMode>(
                 value: ThemeMode.system,
-                groupValue: _themeMode,
+                groupValue: themeMode,
                 onChanged: (mode) {
                   themeProvider.setThemeMode(mode!);
                 },

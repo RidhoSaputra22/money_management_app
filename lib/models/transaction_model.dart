@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:equatable/equatable.dart';
 
 class TransactionModel extends Equatable {
@@ -9,7 +7,7 @@ class TransactionModel extends Equatable {
   final DateTime createAt;
   final String type;
 
-  TransactionModel({
+  const TransactionModel({
     required this.id,
     required this.amount,
     required this.source,
@@ -57,11 +55,6 @@ class TransactionModel extends Equatable {
       type: map['type'] ?? '',
     );
   }
-
-  String toJson() => json.encode(toMap());
-
-  factory TransactionModel.fromJson(String source) =>
-      TransactionModel.fromMap(json.decode(source));
 
   @override
   String toString() {

@@ -1,7 +1,11 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:money_management_app/services/auth_service.dart';
 
 class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
+
   @override
   State<RegisterPage> createState() => _RegisterPageState();
 }
@@ -24,7 +28,7 @@ class _RegisterPageState extends State<RegisterPage> {
         _passwordController.text,
       );
       await AuthService().updateProfile(displayName: _nameController.text);
-
+      if (!mounted) return;
       Navigator.of(context).pushReplacementNamed('/login');
     } catch (e) {
       setState(() {

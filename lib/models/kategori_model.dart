@@ -1,4 +1,4 @@
-import 'dart:convert';
+// ignore_for_file: deprecated_member_use
 
 import 'package:flutter/widgets.dart';
 
@@ -66,16 +66,6 @@ class KategoriModel {
           ? DateTime.fromMillisecondsSinceEpoch(map['createdAt'])
           : null,
     );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory KategoriModel.fromJson(String source) =>
-      KategoriModel.fromMap(json.decode(source));
-
-  @override
-  String toString() {
-    return 'KategoriModel(id: $id, userId: $userId, budgetId: $budgetId, kategori: $kategori, planned: $planned, color: $color, createdAt: $createdAt)';
   }
 
   @override

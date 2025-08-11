@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 
 class AvatarsPicker extends StatelessWidget {
@@ -8,13 +10,13 @@ class AvatarsPicker extends StatelessWidget {
   final String? errorText;
 
   const AvatarsPicker({
-    Key? key,
+    super.key,
     required this.avatars,
     required this.selectedAvatar,
     required this.onAvatarSelected,
     this.label = 'Pilih Avatar',
     this.errorText,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -47,15 +49,15 @@ class AvatarsPicker extends StatelessWidget {
                                 context,
                               ).colorScheme.primary.withOpacity(0.3)
                             : Colors.transparent,
+                        // Tambahkan border jika terpilih
+                        foregroundColor: isSelected
+                            ? Theme.of(context).colorScheme.primary
+                            : Colors.transparent,
                         child: CircleAvatar(
                           radius: 26,
                           backgroundImage: AssetImage(avatarPath),
                           // Jika ingin support network, bisa pakai NetworkImage
                         ),
-                        // Tambahkan border jika terpilih
-                        foregroundColor: isSelected
-                            ? Theme.of(context).colorScheme.primary
-                            : Colors.transparent,
                       ),
                     );
                   }).toList(),

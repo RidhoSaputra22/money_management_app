@@ -5,7 +5,7 @@ class SummaryInfo extends StatelessWidget {
   final String value;
   final Color color;
 
-  const SummaryInfo({
+  const SummaryInfo({super.key, 
     required this.label,
     required this.value,
     required this.color,

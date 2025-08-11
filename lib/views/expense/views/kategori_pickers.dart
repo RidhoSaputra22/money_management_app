@@ -9,13 +9,13 @@ class KategoriPickers extends StatelessWidget {
   final String? errorText; // Add errorText for validation
 
   const KategoriPickers({
-    Key? key,
+    super.key,
     required this.categories,
     required this.selectedCategory,
     required this.onCategorySelected,
     this.label = 'Pilih Kategori',
     this.errorText, // Accept errorText
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

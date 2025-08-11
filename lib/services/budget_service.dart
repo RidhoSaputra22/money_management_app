@@ -24,7 +24,6 @@ class BudgetService {
           });
         }).toList(),
       );
-      print('Budgets with Kategoris: $budgetsWithKategoris');
       return budgetsWithKategoris;
     } catch (e) {
       throw Exception('Failed to load budgets: ${e.toString()}');
@@ -75,7 +74,6 @@ class BudgetService {
   static Future<void> deleteBudget(BudgetModel budget) async {
     try {
       for (KategoriModel kategori in budget.kategoris ?? []) {
-        print('Deleting kategori: ${kategori.id}');
         await FirebaseFirestore.instance
             .collection('kategoris')
             .doc(kategori.id)

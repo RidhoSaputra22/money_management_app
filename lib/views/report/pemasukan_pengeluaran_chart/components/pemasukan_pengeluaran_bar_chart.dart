@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:money_management_app/core/utils/utils.dart';
@@ -126,7 +124,7 @@ class PemasukanPengeluaranBarChart extends StatelessWidget {
                 ),
                 children: [
                   TextSpan(
-                    text: '${_months[group.x]} ${selectedYear}',
+                    text: '${_months[group.x]} $selectedYear',
                     style: const TextStyle(fontSize: 12),
                   ),
                 ],
@@ -161,7 +159,7 @@ class PemasukanPengeluaranBarChart extends StatelessWidget {
                   return Transform.rotate(
                     alignment: Alignment.topCenter,
                     origin: Offset(10, 50),
-                    angle: -45 * math.pi / 180,
+                    angle: -45 * 3.14 / 180,
                     child: Text(
                       Utils.getMonthName(value.toInt()),
                       style: const TextStyle(fontSize: 12),

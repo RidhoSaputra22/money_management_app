@@ -20,7 +20,7 @@ class DistribusiData {
 }
 
 class DistribusiChart extends StatefulWidget {
-  DistribusiChart({super.key});
+  const DistribusiChart({super.key});
 
   @override
   State<DistribusiChart> createState() => _DistribusiChartState();

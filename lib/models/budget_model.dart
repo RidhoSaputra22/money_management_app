@@ -1,7 +1,4 @@
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
 
 import 'package:money_management_app/models/kategori_model.dart';
 
@@ -67,7 +64,7 @@ class BudgetModel {
       'description': description,
       'createdAt': createdAt.millisecondsSinceEpoch,
       'userId': userId,
-      'kategoris': kategoris?.map((x) => x?.toMap())?.toList(),
+      'kategoris': kategoris?.map((x) => x.toMap()).toList(),
     };
   }
 
@@ -88,16 +85,6 @@ class BudgetModel {
             )
           : null,
     );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory BudgetModel.fromJson(String source) =>
-      BudgetModel.fromMap(json.decode(source));
-
-  @override
-  String toString() {
-    return 'BudgetModel(id: $id, name: $name, amount: $amount, startAt: $startAt, endAt: $endAt, range: $range, description: $description, createdAt: $createdAt, userId: $userId, kategoris: $kategoris)';
   }
 
   @override
