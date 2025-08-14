@@ -262,6 +262,7 @@ class IncomePage extends StatelessWidget {
           subtitle: Utils.formatDateIndonesian(item.createAt),
           amount: item.amount,
           type: 'Income',
+          color: Colors.green,
           action: IconButton(
             icon: const Icon(Icons.delete, color: Colors.red),
             onPressed: () {

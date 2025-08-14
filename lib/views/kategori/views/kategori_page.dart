@@ -297,6 +297,7 @@ class _KategoriPageState extends State<KategoriPage> {
           subtitle: Utils.formatDateIndonesian(item.createdAt as DateTime),
           amount: item.planned,
           type: 'expense',
+          color: item.color ?? Colors.blue,
           action: IconButton(
             icon: const Icon(Icons.delete, color: Colors.red),
             onPressed: () {

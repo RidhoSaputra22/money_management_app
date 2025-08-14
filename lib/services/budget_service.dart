@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:money_management_app/models/budget_model.dart';
+import 'package:money_management_app/models/expense_model.dart';
 import 'package:money_management_app/models/kategori_model.dart';
 import 'package:money_management_app/services/auth_service.dart';
+import 'package:money_management_app/services/expense_service.dart';
 import 'package:money_management_app/services/kategori_services.dart';
 
 class BudgetService {
@@ -79,6 +81,16 @@ class BudgetService {
             .doc(kategori.id)
             .delete();
       }
+
+      final List<ExpenseModel> expenses = await ExpenseService.fetchByBudget(
+        budget.id,
+      );
+      await Future.wait(
+        expenses.map((expense) async {
+          await ExpenseService.deleteExpense(expense);
+        }),
+      );
+
       await FirebaseFirestore.instance
           .collection('budgets')
           .doc(budget.id)

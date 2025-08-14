@@ -111,6 +111,7 @@ class BudgetPage extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final item = budgets[index];
                   return ListCard(
+                    color: Colors.black,
                     onTap: () => _showBudgetForm(context, budget: item),
                     title: item.name,
                     subtitle: Utils.formatDateIndonesian(item.startAt),

@@ -69,4 +69,21 @@ class ExpenseService {
       );
     }
   }
+
+  static fetchByBudget(String? id) async {
+    if (id == null) return Future.value([]);
+
+    final String userId = await AuthService().getCurrentUserId();
+
+    return FirebaseFirestore.instance
+        .collection('expenses')
+        .where('budgetId', isEqualTo: id)
+        .where('userId', isEqualTo: userId)
+        .get()
+        .then((snapshot) {
+          return snapshot.docs
+              .map((doc) => ExpenseModel.fromMap(doc.data()))
+              .toList();
+        });
+  }
 }

@@ -131,6 +131,14 @@ class HomeHeader extends StatelessWidget {
           }
 
           if (state is HomeLoaded) {
+            final double saldo =
+                state.transactions
+                    .where((transaction) => transaction.type == 'income')
+                    .fold(0.0, (sum, item) => sum + item.amount) -
+                state.transactions
+                    .where((transaction) => transaction.type == 'expense')
+                    .fold(0.0, (sum, item) => sum + item.amount);
+
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -159,12 +167,7 @@ class HomeHeader extends StatelessWidget {
                           style: TextStyle(color: Colors.white70, fontSize: 15),
                         ),
                         Text(
-                          Utils.toIDR(
-                            state.transactions.fold(
-                              0,
-                              (sum, item) => sum + item.amount,
-                            ),
-                          ),
+                          Utils.toIDR(saldo),
                           style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,

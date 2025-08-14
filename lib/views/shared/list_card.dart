@@ -9,6 +9,7 @@ class ListCard extends StatelessWidget {
   final String type;
   final VoidCallback? onTap;
   final Widget? action;
+  final Color color;
 
   const ListCard({
     Key? key,
@@ -18,6 +19,7 @@ class ListCard extends StatelessWidget {
     required this.type,
     this.onTap,
     this.action,
+    required this.color,
   }) : super(key: key);
 
   @override
@@ -70,9 +72,11 @@ class ListCard extends StatelessWidget {
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
-                        color: type == 'income' ? Colors.green : Colors.red,
+                        color: color,
                       ),
                     ),
+                    SizedBox(width: 10),
+                    action ?? const SizedBox.shrink(),
                   ],
                 ),
                 const SizedBox(height: 12),
@@ -86,14 +90,14 @@ class ListCard extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
-              color: type == 'income' ? Colors.green : Colors.red,
+              color: color,
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(12),
                 topRight: Radius.circular(12),
               ),
             ),
             child: Text(
-              type == 'income' ? 'Pemasukan' : 'Pengeluaran',
+              type,
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 12,

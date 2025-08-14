@@ -263,6 +263,7 @@ class ExpensePage extends StatelessWidget {
       itemBuilder: (context, index) {
         final item = expenses[index];
         return ListCard(
+          color: Colors.red,
           onTap: () => _editExpense(context, item, budgets),
           title: item.source,
           subtitle: Utils.formatDateIndonesian(item.createAt),
