@@ -4,8 +4,8 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:money_management_app/models/kategori_model.dart';
 import 'package:money_management_app/services/auth_service.dart';
 
-import 'package:money_management_app/views/shared/buttons/cancel_button.dart';
 import 'package:money_management_app/views/shared/buttons/save_button.dart';
+import 'package:money_management_app/views/shared/money_form.dart';
 
 class KategoriForm extends StatefulWidget {
   final Function(KategoriModel kategori) onSubmit;
@@ -36,10 +36,11 @@ class _KategoriFormState extends State<KategoriForm> {
   void initState() {
     super.initState();
     _kategoriController.text = widget.kategori?.kategori ?? '';
-    _plannedController.text = widget.kategori?.planned.toString() ?? '';
+    _plannedController.text = widget.kategori?.planned.toString() ?? '0';
     _selectedColor = widget.kategori?.color ?? Colors.grey[300];
   }
 
+  /// Fungsi untuk submit form kategori ke parent widget
   void _submit() async {
     if (_formKey.currentState!.validate()) {
       final kategori = _kategoriController.text.trim();
@@ -54,7 +55,7 @@ class _KategoriFormState extends State<KategoriForm> {
           planned: planned,
           createdAt: DateTime.now(),
           color: _selectedColor ?? const Color(0xFF000000),
-          budgetId: widget.kategori!.budgetId,
+          budgetId: widget.kategori?.budgetId ?? '',
         ),
       );
       if (widget.kategori == null) {
@@ -64,87 +65,85 @@ class _KategoriFormState extends State<KategoriForm> {
     }
   }
 
+  /// Widget untuk input nama kategori
+  Widget _buildKategoriField() {
+    return TextFormField(
+      decoration: const InputDecoration(labelText: 'Jenis Transaksi'),
+      controller: _kategoriController,
+      validator: (value) => value == null || value.trim().isEmpty
+          ? 'Jenis Transaksi wajib diisi'
+          : null,
+    );
+  }
+
+  /// Widget untuk input nilai planned menggunakan MoneyFormField
+  Widget _buildPlannedField() {
+    return MoneyFormField(
+      value: double.tryParse(_plannedController.text)!.toInt(),
+      onValueChanged: (value) {
+        setState(() {
+          _plannedController.text = value.toString();
+        });
+      },
+    );
+  }
+
+  /// Widget untuk memilih warna kategori
+  Widget _buildColorPicker() {
+    return TextButton(
+      style: TextButton.styleFrom(
+        backgroundColor: _selectedColor ?? Colors.grey[300],
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      ),
+      onPressed: () async {
+        final color = await showDialog<Color>(
+          context: context,
+          builder: (context) => AlertDialog(
+            content: SingleChildScrollView(
+              child: BlockPicker(
+                pickerColor: _selectedColor ?? Colors.grey[300]!,
+                onColorChanged: (color) {
+                  Navigator.of(context).pop(color);
+                },
+              ),
+            ),
+          ),
+        );
+        if (color != null) {
+          setState(() {
+            _selectedColor = color;
+          });
+        }
+      },
+      child: const Text('', style: TextStyle(color: Colors.white)),
+    );
+  }
+
+  /// Widget untuk tombol aksi (simpan dan batal)
+  Widget _buildActionButtons() {
+    return Row(
+      children: [Expanded(child: SaveButton(onPressed: _submit))],
+    );
+  }
+
+  /// Fungsi utama membangun tampilan form kategori
   @override
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
       child: Column(
-        spacing: spacing,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          TextFormField(
-            decoration: const InputDecoration(labelText: 'Kategori'),
-            controller: _kategoriController,
-            validator: (value) => value == null || value.trim().isEmpty
-                ? 'Kategori wajib diisi'
-                : null,
-          ),
-          TextFormField(
-            decoration: const InputDecoration().copyWith(labelText: 'Jumlah'),
-            controller: _plannedController,
-            keyboardType: TextInputType.number,
-            validator: (value) {
-              if (value == null || value.trim().isEmpty) {
-                return 'Jumlah wajib diisi';
-              }
-              final numValue = int.tryParse(value.trim());
-              if (numValue == null || numValue <= 0) return 'Jumlah harus > 0';
-
-              if (numValue > widget.kategori!.planned &&
-                  widget.kategori!.id != null) {
-                return 'Jumlah tidak boleh lebih besar dari sisa anggaran';
-              }
-              return null;
-            },
-          ),
           Row(
-            spacing: spacing,
             children: [
-              Expanded(
-                child: TextButton(
-                  style: TextButton.styleFrom(
-                    backgroundColor: _selectedColor ?? Colors.grey[300],
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                  ),
-                  onPressed: () async {
-                    final color = await showDialog<Color>(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: const Text('Pilih Warna'),
-                        content: SingleChildScrollView(
-                          child: BlockPicker(
-                            pickerColor: _selectedColor ?? Colors.grey[300]!,
-                            onColorChanged: (color) {
-                              Navigator.of(context).pop(color);
-                            },
-                          ),
-                        ),
-                      ),
-                    );
-                    if (color != null) {
-                      setState(() {
-                        _selectedColor = color;
-                      });
-                    }
-                  },
-                  child: Text(
-                    'Pilih Warna',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ),
+              _buildColorPicker(),
+              const SizedBox(width: 12),
+              Expanded(child: _buildKategoriField()),
             ],
           ),
-          Spacer(),
-          Row(
-            spacing: spacing,
-            children: [
-              Expanded(child: SaveButton(onPressed: _submit)),
-              if (widget.kategori != null)
-                CancelButton(onPressed: () => Navigator.of(context).pop()),
-            ],
-          ),
+          const SizedBox(height: 12),
+          _buildPlannedField(),
+          _buildActionButtons(),
         ],
       ),
     );

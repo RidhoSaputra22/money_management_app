@@ -64,7 +64,7 @@ class _FilterFormState extends State<FilterForm> {
           widget.budgets != null && widget.budgets!.isNotEmpty
               ? DropdownButtonFormField<String>(
                   value: _selectedBudgetId,
-                  decoration: const InputDecoration(labelText: 'Budget'),
+                  decoration: const InputDecoration(labelText: 'Pilih Budget'),
                   items: widget.budgets!
                       .map(
                         (budget) => DropdownMenuItem<String>(
@@ -78,8 +78,9 @@ class _FilterFormState extends State<FilterForm> {
                       _selectedBudgetId = value;
                     });
                   },
-                  validator: (value) =>
-                      value == null || value.isEmpty ? 'Select a budget' : null,
+                  validator: (value) => value == null || value.isEmpty
+                      ? 'Budget wajib dipilih'
+                      : null,
                 )
               : const SizedBox.shrink(),
           const SizedBox(height: 16),
@@ -88,13 +89,13 @@ class _FilterFormState extends State<FilterForm> {
               Expanded(
                 child: TextFormField(
                   controller: _fromController,
-                  decoration: const InputDecoration(labelText: 'From Amount'),
+                  decoration: const InputDecoration(labelText: 'Jumlah Dari'),
                   keyboardType: TextInputType.numberWithOptions(decimal: true),
                   validator: (value) {
                     if (value != null && value.isNotEmpty) {
                       final num = double.tryParse(value);
                       if (num == null || num < 0) {
-                        return 'Enter valid amount';
+                        return 'Masukkan jumlah yang valid';
                       }
                     }
                     return null;
@@ -105,13 +106,13 @@ class _FilterFormState extends State<FilterForm> {
               Expanded(
                 child: TextFormField(
                   controller: _toController,
-                  decoration: const InputDecoration(labelText: 'To Amount'),
+                  decoration: const InputDecoration(labelText: 'Jumlah Sampai'),
                   keyboardType: TextInputType.numberWithOptions(decimal: true),
                   validator: (value) {
                     if (value != null && value.isNotEmpty) {
                       final num = double.tryParse(value);
                       if (num == null || num < 0) {
-                        return 'Enter valid amount';
+                        return 'Masukkan jumlah yang valid';
                       }
                     }
                     return null;
@@ -121,7 +122,7 @@ class _FilterFormState extends State<FilterForm> {
             ],
           ),
           const SizedBox(height: 24),
-          Spacer(),
+          const Spacer(),
           Row(
             children: [
               Expanded(

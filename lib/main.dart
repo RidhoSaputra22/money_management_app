@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:money_management_app/core/theme/app_theme.dart';
 import 'package:money_management_app/core/theme/theme_provider.dart';
-import 'package:money_management_app/views/home/home_page.dart';
+import 'package:money_management_app/views/home/views/home_page.dart';
 import 'package:money_management_app/views/auth/login_page.dart';
 import 'package:money_management_app/views/auth/register_page.dart';
 import 'package:money_management_app/views/income/views/income_page.dart';

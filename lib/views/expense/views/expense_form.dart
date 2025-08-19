@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:money_management_app/models/budget_model.dart';
 import 'package:money_management_app/models/expense_model.dart';
 import 'package:money_management_app/models/kategori_model.dart';
 import 'package:money_management_app/services/auth_service.dart';
+import 'package:money_management_app/views/expense/blocs/expense_bloc.dart';
+import 'package:money_management_app/views/expense/blocs/expense_event.dart';
 import 'package:money_management_app/views/expense/views/kategori_pickers.dart';
 
-import 'package:money_management_app/views/shared/buttons/cancel_button.dart';
+import 'package:money_management_app/views/shared/buttons/delete_button.dart';
 import 'package:money_management_app/views/shared/buttons/save_button.dart';
+import 'package:money_management_app/views/shared/money_form.dart';
 
 class ExpenseForm extends StatefulWidget {
   final Function(ExpenseModel expense) onSubmit;
@@ -45,7 +49,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
   void initState() {
     super.initState();
     _sourceController.text = widget.expense?.source ?? '';
-    _amountController.text = widget.expense?.amount.toString() ?? '';
+    _amountController.text = widget.expense?.amount.toString() ?? '0';
     _selectedKategori = widget.expense?.kategoriId != null
         ? widget.budgets
               .firstWhere((budget) => budget.id == widget.expense!.budgetId)
@@ -81,87 +85,83 @@ class _ExpenseFormState extends State<ExpenseForm> {
     }
   }
 
+  void _deleteExpense(ExpenseModel expense) {
+    context.read<ExpenseBloc>().add(DeleteExpenseEvent(expense: expense));
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
-      child: Column(
-        spacing: spacing,
-        children: [
-          DropdownButtonFormField<String>(
-            decoration: const InputDecoration(labelText: 'Budget'),
-            value: _selectedBudgetId,
-            items: widget.budgets
-                .map(
-                  (budget) => DropdownMenuItem(
-                    value: budget.id,
-                    child: Text(budget.name),
-                  ),
-                )
-                .toList(),
-            onChanged: (value) {
-              setState(() {
-                _selectedBudgetId = value;
-              });
-            },
-            validator: (value) =>
-                value == null || value.isEmpty ? 'Pilih budget' : null,
-          ),
-          Row(
-            spacing: spacing,
-            children: [
-              Expanded(
-                child: TextFormField(
-                  decoration: const InputDecoration(labelText: 'Sumber'),
-                  controller: _sourceController,
-                  validator: (value) => value == null || value.trim().isEmpty
-                      ? 'Sumber wajib diisi'
-                      : null,
-                ),
-              ),
-              Expanded(
-                child: TextFormField(
-                  decoration: const InputDecoration().copyWith(
-                    labelText: 'Jumlah',
-                  ),
-                  controller: _amountController,
-                  keyboardType: TextInputType.number,
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Jumlah wajib diisi';
-                    }
-                    final numValue = int.tryParse(value.trim());
-                    if (numValue == null || numValue <= 0) {
-                      return 'Jumlah harus > 0';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-            ],
-          ),
-          if (_selectedBudgetId != null)
-            KategoriPickers(
-              categories: widget.budgets
-                  .firstWhere((budget) => budget.id == _selectedBudgetId)
-                  .kategoris!,
-              selectedCategory: _selectedKategori,
-              onCategorySelected: (kategori) {
+      child: SingleChildScrollView(
+        // SingleChildScrollView agar tidak stretch ke bawah
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min, // Tambahkan ini!
+          children: [
+            DropdownButtonFormField<String>(
+              decoration: const InputDecoration(labelText: 'Budget'),
+              value: _selectedBudgetId,
+              items: widget.budgets
+                  .map(
+                    (budget) => DropdownMenuItem(
+                      value: budget.id,
+                      child: Text(budget.name),
+                    ),
+                  )
+                  .toList(),
+              onChanged: (value) {
                 setState(() {
-                  _selectedKategori = kategori;
+                  _selectedBudgetId = value;
+                });
+              },
+              validator: (value) =>
+                  value == null || value.isEmpty ? 'Pilih budget' : null,
+            ),
+            const SizedBox(height: 12),
+            TextFormField(
+              decoration: const InputDecoration(labelText: 'Nama Transaksi'),
+              controller: _sourceController,
+              validator: (value) => value == null || value.trim().isEmpty
+                  ? 'Sumber wajib diisi'
+                  : null,
+            ),
+            const SizedBox(height: 12),
+            if (_selectedBudgetId != null)
+              KategoriPickers(
+                categories: widget.budgets
+                    .firstWhere((budget) => budget.id == _selectedBudgetId)
+                    .kategoris!,
+                selectedCategory: _selectedKategori,
+                onCategorySelected: (kategori) {
+                  setState(() {
+                    _selectedKategori = kategori;
+                  });
+                },
+              ),
+            const SizedBox(height: 12),
+            MoneyFormField(
+              value: double.tryParse(_amountController.text)!.toInt(),
+              onValueChanged: (value) {
+                setState(() {
+                  _amountController.text = value.toString();
                 });
               },
             ),
-          Spacer(),
-          Row(
-            spacing: spacing,
-            children: [
-              Expanded(child: SaveButton(onPressed: _submit)),
-              if (widget.expense != null)
-                CancelButton(onPressed: () => Navigator.of(context).pop()),
-            ],
-          ),
-        ],
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(child: SaveButton(onPressed: _submit)),
+                if (widget.expense != null) const SizedBox(width: 12),
+                if (widget.expense != null)
+                  DeleteButton(
+                    onPressed: () => _deleteExpense(widget.expense!),
+                  ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

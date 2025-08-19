@@ -12,7 +12,7 @@ class IncomeService {
           .get();
 
       return snapshot.docs
-          .map((doc) => IncomeModel.fromMap(doc.data()))
+          .map((doc) => IncomeModel.fromMap({...doc.data(), 'id': doc.id}))
           .toList();
     } catch (e) {
       throw Exception('Failed to load incomes: ${e.toString()}');

@@ -6,13 +6,19 @@ class TransactionItem extends StatelessWidget {
   final String subtitle;
   final double amount;
   final String type;
+  EdgeInsetsGeometry margin;
+  EdgeInsetsGeometry padding;
+  Radius borderRadius;
 
-  const TransactionItem({
+  TransactionItem({
     super.key,
     required this.title,
     required this.subtitle,
     required this.amount,
     required this.type,
+    this.margin = const EdgeInsets.only(bottom: 32),
+    this.padding = const EdgeInsets.all(18),
+    this.borderRadius = const Radius.circular(18),
   });
 
   @override
@@ -20,11 +26,11 @@ class TransactionItem extends StatelessWidget {
     return Stack(
       children: [
         Container(
-          margin: const EdgeInsets.only(bottom: 22),
-          padding: const EdgeInsets.all(18),
+          margin: margin,
+          padding: padding,
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(borderRadius.x),
             boxShadow: const [
               BoxShadow(
                 color: Colors.black12,
@@ -88,8 +94,8 @@ class TransactionItem extends StatelessWidget {
             decoration: BoxDecoration(
               color: type == 'income' ? Colors.green : Colors.red,
               borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(12),
-                topRight: Radius.circular(12),
+                bottomLeft: Radius.circular(borderRadius.x),
+                topRight: Radius.circular(borderRadius.x),
               ),
             ),
             child: Text(

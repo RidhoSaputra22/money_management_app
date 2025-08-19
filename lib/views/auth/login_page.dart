@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:money_management_app/services/auth_service.dart';
+import 'package:money_management_app/views/shared/dialog_loading.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -19,6 +20,8 @@ class _LoginPageState extends State<LoginPage> {
   bool isLoading = false;
 
   Future<void> _login() async {
+    if (isLoading) return; // Prevent multiple taps
+    showDialog(context: context, builder: (context) => const DialogLoading());
     try {
       setState(() {
         isLoading = true;
@@ -34,6 +37,7 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         isLoading = false;
       });
+      Navigator.of(context).pop(); // Close the loading dialog
       Navigator.of(context).pushReplacementNamed('/');
     } catch (e) {
       setState(() {
@@ -42,6 +46,7 @@ class _LoginPageState extends State<LoginPage> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Login failed')));
+      Navigator.of(context).pop(); // Close the loading dialog
     }
   }
 
@@ -205,20 +210,11 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
+                        if (isLoading) return; // Prevent multiple taps
                         _login();
                       }
                     },
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        if (isLoading) ...[
-                          CircularProgressIndicator(),
-                        ] else ...[
-                          Text('Login'),
-                        ],
-                      ],
-                    ),
+                    child: Text('Login'),
                   ),
                 ),
                 SizedBox(height: 16),

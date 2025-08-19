@@ -12,7 +12,7 @@ class ListCard extends StatelessWidget {
   final Color color;
 
   const ListCard({
-    Key? key,
+    super.key,
     required this.title,
     required this.subtitle,
     required this.amount,
@@ -20,7 +20,7 @@ class ListCard extends StatelessWidget {
     this.onTap,
     this.action,
     required this.color,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

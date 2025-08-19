@@ -6,10 +6,10 @@ import 'package:money_management_app/views/home/bloc/home_event.dart';
 import 'package:money_management_app/views/home/bloc/home_state.dart';
 import 'package:money_management_app/views/home/widgets/transaction_item_loading.dart';
 
-import '../shared/bottom_nav.dart';
-import 'widgets/home_header.dart';
-import 'widgets/history_header.dart';
-import 'widgets/transaction_item.dart';
+import '../../shared/bottom_nav.dart';
+import '../widgets/home_header.dart';
+import '../widgets/history_header.dart';
+import '../widgets/transaction_item.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -52,9 +52,11 @@ class HomePage extends StatelessWidget {
                             const HistoryHeader(),
                             const SizedBox(height: 18),
                             Expanded(
-                              child: ListView(
+                              child: ListView.builder(
                                 physics: const AlwaysScrollableScrollPhysics(),
-                                children: state.transactions.map((transaction) {
+                                itemCount: state.transactions.length,
+                                itemBuilder: (context, index) {
+                                  final transaction = state.transactions[index];
                                   return TransactionItem(
                                     title: transaction.source,
                                     subtitle: Utils.timeAgo(
@@ -63,7 +65,7 @@ class HomePage extends StatelessWidget {
                                     amount: transaction.amount,
                                     type: transaction.type,
                                   );
-                                }).toList(),
+                                },
                               ),
                             ),
                           ],

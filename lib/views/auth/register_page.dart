@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:money_management_app/services/auth_service.dart';
+import 'package:money_management_app/views/shared/dialog_loading.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -19,6 +20,8 @@ class _RegisterPageState extends State<RegisterPage> {
   bool isLoading = false;
 
   Future<void> _register() async {
+    if (isLoading) return; // Prevent multiple taps
+    showDialog(context: context, builder: (context) => const DialogLoading());
     try {
       setState(() {
         isLoading = true;
@@ -29,6 +32,7 @@ class _RegisterPageState extends State<RegisterPage> {
       );
       await AuthService().updateProfile(displayName: _nameController.text);
       if (!mounted) return;
+      Navigator.of(context).pop(); // Close the loading dialogc
       Navigator.of(context).pushReplacementNamed('/login');
     } catch (e) {
       setState(() {
@@ -37,6 +41,7 @@ class _RegisterPageState extends State<RegisterPage> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Registration failed')));
+      Navigator.of(context).pop(); // Close the loading dialog
     }
   }
 
@@ -210,16 +215,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       _register();
                     }
                   },
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      if (isLoading)
-                        CircularProgressIndicator()
-                      else
-                        Text('Daftar'),
-                    ],
-                  ),
+                  child: Text('Daftar'),
                 ),
               ),
               SizedBox(height: 16),

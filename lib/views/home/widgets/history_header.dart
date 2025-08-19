@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:money_management_app/views/home/bloc/home_bloc.dart';
+import 'package:money_management_app/views/home/views/search_page.dart';
 
 class HistoryHeader extends StatelessWidget {
   const HistoryHeader({super.key});
@@ -12,7 +15,22 @@ class HistoryHeader extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
         const Spacer(),
-        Icon(Icons.search, color: Colors.grey[600]),
+        IconButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return BlocProvider(
+                    create: (context) => HomeBloc(),
+                    child: const SearchPage(),
+                  );
+                },
+              ),
+            );
+          },
+          icon: const Icon(Icons.search, color: Colors.grey),
+        ),
       ],
     );
   }

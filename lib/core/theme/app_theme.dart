@@ -100,8 +100,9 @@ class AppTheme {
       labelStyle: const TextStyle(color: Colors.black87),
       hintStyle: const TextStyle(color: Colors.black54),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(8),
         borderSide: BorderSide.none,
       ),
     ),

@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:money_management_app/views/home/home_page.dart';
+import 'package:money_management_app/views/home/views/home_page.dart';
 import 'package:money_management_app/views/auth/login_page.dart';
 
 class AuthWrapper extends StatelessWidget {

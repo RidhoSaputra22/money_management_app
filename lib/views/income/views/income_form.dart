@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:money_management_app/models/income_model.dart';
 import 'package:money_management_app/services/auth_service.dart';
 import 'package:money_management_app/models/budget_model.dart';
-import 'package:money_management_app/views/shared/buttons/cancel_button.dart';
+import 'package:money_management_app/views/income/bloc/income_bloc.dart';
+import 'package:money_management_app/views/income/bloc/income_event.dart';
+import 'package:money_management_app/views/shared/buttons/delete_button.dart';
 import 'package:money_management_app/views/shared/buttons/save_button.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:money_management_app/views/shared/money_form.dart';
 
 class IncomeForm extends StatefulWidget {
   final Function(IncomeModel income) onSubmit;
   final IncomeModel? income;
-  final List<BudgetModel> budgets; // Tambahkan list budget
+  final List<BudgetModel> budgets;
 
   const IncomeForm({
     super.key,
@@ -25,8 +29,6 @@ class _IncomeFormState extends State<IncomeForm> {
   final _formKey = GlobalKey<FormState>();
   final _sourceController = TextEditingController();
   final _amountController = TextEditingController();
-  // String? _selectedBudgetId;
-  double spacing = 12.0;
 
   @override
   void dispose() {
@@ -62,56 +64,48 @@ class _IncomeFormState extends State<IncomeForm> {
     }
   }
 
+  void _deleteIncome(IncomeModel income) {
+    context.read<IncomeBloc>().add(DeleteIncomeEvent(income: income));
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
-      child: Column(
-        spacing: spacing,
-        children: [
-          Row(
-            spacing: spacing,
-            children: [
-              Expanded(
-                child: TextFormField(
-                  decoration: const InputDecoration(labelText: 'Sumber'),
-                  controller: _sourceController,
-                  validator: (value) => value == null || value.trim().isEmpty
-                      ? 'Sumber wajib diisi'
-                      : null,
-                ),
-              ),
-              Expanded(
-                child: TextFormField(
-                  decoration: const InputDecoration().copyWith(
-                    labelText: 'Jumlah',
-                  ),
-                  controller: _amountController,
-                  keyboardType: TextInputType.number,
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Jumlah wajib diisi';
-                    }
-                    final numValue = int.tryParse(value.trim());
-                    if (numValue == null || numValue <= 0) {
-                      return 'Jumlah harus > 0';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-            ],
-          ),
-          Spacer(),
-          Row(
-            spacing: spacing,
-            children: [
-              Expanded(child: SaveButton(onPressed: _submit)),
-              if (widget.income != null)
-                CancelButton(onPressed: () => Navigator.of(context).pop()),
-            ],
-          ),
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextFormField(
+              decoration: const InputDecoration(labelText: 'Sumber'),
+              controller: _sourceController,
+              validator: (value) => value == null || value.trim().isEmpty
+                  ? 'Sumber wajib diisi'
+                  : null,
+            ),
+            const SizedBox(height: 12),
+            MoneyFormField(
+              value: (double.tryParse(_amountController.text) ?? 0).toInt(),
+              onValueChanged: (value) {
+                setState(() {
+                  _amountController.text = value.toString();
+                });
+              },
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(child: SaveButton(onPressed: _submit)),
+                if (widget.income != null) ...[
+                  const SizedBox(width: 12),
+                  DeleteButton(onPressed: () => _deleteIncome(widget.income!)),
+                ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

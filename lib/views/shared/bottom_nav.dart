@@ -47,7 +47,7 @@ class BottomNav extends StatelessWidget {
                 Icons.attach_money,
                 color: Theme.of(context).primaryColor,
               ),
-              label: 'Income',
+              label: 'Pemasukan',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.money_off_outlined),
@@ -55,7 +55,7 @@ class BottomNav extends StatelessWidget {
                 Icons.money_off,
                 color: Theme.of(context).primaryColor,
               ),
-              label: 'Expense',
+              label: 'Pengeluaran',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.bar_chart_outlined),
@@ -71,7 +71,7 @@ class BottomNav extends StatelessWidget {
                 Icons.insert_chart,
                 color: Theme.of(context).primaryColor,
               ),
-              label: 'Report',
+              label: 'Laporan',
             ),
           ],
           onTap: (index) {
@@ -80,11 +80,7 @@ class BottomNav extends StatelessWidget {
                 Navigator.pushReplacementNamed(context, '/');
                 break;
               case 1:
-                Navigator.pushReplacementNamed(
-                  context,
-                  '/income',
-                  arguments: {'budgetId': 'SAWAH'},
-                );
+                Navigator.pushReplacementNamed(context, '/income');
                 break;
               case 2:
                 Navigator.pushReplacementNamed(context, '/expense');

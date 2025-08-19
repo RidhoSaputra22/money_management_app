@@ -4,24 +4,14 @@ class Utils {
   static String currency(double amount) => '\$${amount.toStringAsFixed(2)}';
 
   static String toIDR(double amount) {
-    final formatter = NumberFormat.currency(
-      locale: 'id_ID',
-      symbol: 'Rp. ',
-      decimalDigits: 0,
-    );
-    return formatter.format(amount);
+    final formatter = NumberFormat.decimalPattern('en_US');
+    return 'Rp. ${formatter.format(amount)}';
   }
 
   static String formatDateIndonesian(DateTime date) {
     final formatter = DateFormat('dd MMMM yyyy', 'id_ID');
     return formatter.format(date);
   }
-
-  // static String generateUlid() {
-  //   final now = DateTime.now().millisecondsSinceEpoch;
-  //   final random = DateTime.now().microsecondsSinceEpoch.remainder(1000000);
-  //   return '${now.toRadixString(36)}${random.toRadixString(36).padLeft(6, '0')}';
-  // }
 
   static int getRandomDistinctColor() {
     final colors = [

@@ -51,9 +51,19 @@ class BudgetService {
   // Budget state management
   static Future<void> addBudget(BudgetModel budget) async {
     try {
-      await FirebaseFirestore.instance
+      List<KategoriModel> kategoris = budget.kategoris ?? [];
+      final budgetRef = await FirebaseFirestore.instance
           .collection('budgets')
-          .add(budget.toMap());
+          .add(budget.copyWith(kategoris: () => []).toMap());
+
+      await budgetRef.update({'id': budgetRef.id});
+
+      for (KategoriModel kategori in kategoris) {
+        await KategoriService.addKategori(
+          kategori.copyWith(budgetId: budgetRef.id),
+        );
+      }
+
       // Update the document with its generated ID
     } catch (e) {
       throw Exception('Failed to add budget: ${e.toString()}');
@@ -63,6 +73,10 @@ class BudgetService {
   static Future<void> updateBudget(BudgetModel budget) async {
     try {
       // Logic to update a budget
+      for (KategoriModel kategori in budget.kategoris ?? []) {
+        await KategoriService.updateKategori(kategori);
+      }
+
       final dbref = FirebaseFirestore.instance
           .collection('budgets')
           .doc(budget.id);

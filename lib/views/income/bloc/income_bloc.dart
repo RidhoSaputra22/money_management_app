@@ -89,7 +89,6 @@ class IncomeBloc extends Bloc<IncomeEvent, IncomeState> {
       }).toList();
 
       final filtersApply = <String, dynamic>{
-        if (event.budgetId != null) 'budgetId': event.budgetId,
         if (event.from != null) 'from': event.from,
         if (event.to != null) 'to': event.to,
       };
