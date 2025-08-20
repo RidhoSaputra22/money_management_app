@@ -50,7 +50,7 @@ class MoneyFormField extends StatelessWidget {
                 child: Button(
                   onPressed: () {
                     int newValue = value;
-                    newValue = 0;
+                    newValue = newValue ~/ 10;
                     onValueChanged(newValue);
                   },
                   label: text,

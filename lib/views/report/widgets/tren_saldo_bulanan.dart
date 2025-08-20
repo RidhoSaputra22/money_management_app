@@ -73,6 +73,12 @@ class _TrenSaldoBulananState extends State<TrenSaldoBulanan> {
         : 0;
   }
 
+  double get minSaldo {
+    return monthlyData.isNotEmpty
+        ? monthlyData.map((e) => e.saldo).reduce((a, b) => a < b ? a : b) * 1.2
+        : 0;
+  }
+
   @override
   Widget build(BuildContext context) {
     return CustomCard(
@@ -89,7 +95,7 @@ class _TrenSaldoBulananState extends State<TrenSaldoBulanan> {
                   : LineChart(
                       LineChartData(
                         maxY: maxSaldo,
-                        minY: 0,
+                        minY: minSaldo,
                         maxX: DateTime.now().month.toDouble(),
                         minX: 0,
                         gridData: FlGridData(show: true),
@@ -116,7 +122,7 @@ class _TrenSaldoBulananState extends State<TrenSaldoBulanan> {
                               reservedSize: 40,
                               getTitlesWidget: (value, _) => Text(
                                 Utils.currencySuffix(value),
-                                style: TextStyle(fontSize: 12),
+                                style: TextStyle(fontSize: 8),
                               ),
                             ),
                           ),

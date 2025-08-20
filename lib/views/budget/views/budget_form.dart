@@ -84,7 +84,7 @@ class _BudgetFormState extends State<BudgetForm> {
 
   // Validation logic
   bool _isKategoriValid() {
-    final budgetAmount = double.tryParse(_amountController.text.trim()) ?? 0;
+    final double budgetAmount = double.parse(_amountController.text.trim());
     if (_totalKategori < budgetAmount) {
       _showWarning(
         'Jenis Transaksi Tidak Valid',
@@ -96,6 +96,13 @@ class _BudgetFormState extends State<BudgetForm> {
       _showWarning(
         'Budget Tidak Valid',
         'Jumlah budget harus diisi dengan angka yang valid',
+      );
+      return false;
+    }
+    if (budgetAmount <= 0) {
+      _showWarning(
+        'Budget Tidak Valid',
+        'Jumlah budget tidak boleh negatif atau nol',
       );
       return false;
     }
@@ -146,6 +153,7 @@ class _BudgetFormState extends State<BudgetForm> {
       );
       return;
     }
+
     showModalBottomSheet(
       isScrollControlled: true,
       context: context,
@@ -156,12 +164,32 @@ class _BudgetFormState extends State<BudgetForm> {
             padding: const EdgeInsets.all(16.0),
             child: KategoriForm(
               onSubmit: (kategori) {
+                if (kategori.planned <= 0) {
+                  _showWarning(
+                    'Kategori Tidak Valid',
+                    'Nilai kategori tidak boleh negatif atau nol',
+                  );
+                  return;
+                }
                 if (_totalKategori + kategori.planned > budgetAmount) {
                   _showWarning(
                     'Jenis Transaksi Tidak Valid',
                     'Nilai planned kategori tidak boleh melebihi jumlah budget',
                   );
                   return;
+                }
+                if (widget.budget?.kategoris?.any(
+                      (k) => k.kategori == kategori.kategori,
+                    ) ??
+                    false) {
+                  _showWarning(
+                    'Kategori Sudah Ada',
+                    'Kategori dengan nama "${kategori.kategori}" sudah ada dalam budget ini.',
+                  );
+                  return;
+                }
+                if (widget.budget?.id != null) {
+                  kategori.budgetId = widget.budget!.id!;
                 }
                 setState(() {
                   _kategoris.add(kategori);

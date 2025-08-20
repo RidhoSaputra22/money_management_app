@@ -79,7 +79,7 @@ class _IncomeFormState extends State<IncomeForm> {
           mainAxisSize: MainAxisSize.min,
           children: [
             TextFormField(
-              decoration: const InputDecoration(labelText: 'Sumber'),
+              decoration: const InputDecoration(labelText: 'Nama Transaksi'),
               controller: _sourceController,
               validator: (value) => value == null || value.trim().isEmpty
                   ? 'Sumber wajib diisi'

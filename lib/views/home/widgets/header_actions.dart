@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:money_management_app/services/auth_service.dart';
 import 'package:money_management_app/views/home/bloc/home_bloc.dart';
 import 'package:money_management_app/views/home/bloc/home_state.dart';
 import 'circle_icon_button.dart';
@@ -32,8 +33,10 @@ class HeaderActions extends StatelessWidget {
               message: "Keluar",
               child: CircleIconButton(
                 icon: Icons.logout,
-                onPressed: () {
-                  Navigator.pushNamed(context, '/logout');
+                onPressed: () async {
+                  await AuthService().logout();
+                  // ignore: use_build_context_synchronously
+                  Navigator.pushReplacementNamed(context, '/login');
                 },
               ),
             ),

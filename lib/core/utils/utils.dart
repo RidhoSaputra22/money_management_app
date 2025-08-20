@@ -74,10 +74,18 @@ class Utils {
   }
 
   static String currencySuffix(double value) {
-    if (value >= 1e9) return '${(value / 1e9).toStringAsFixed(1)} M';
-    if (value >= 1e6) return '${(value / 1e6).toStringAsFixed(1)} jt';
-    if (value >= 1e3) return '${(value / 1e3).toStringAsFixed(1)} rb';
-    return value.toInt().toString();
+    final absValue = value.abs();
+    String result;
+    if (absValue >= 1e9) {
+      result = '${(absValue / 1e9).toStringAsFixed(1)} M';
+    } else if (absValue >= 1e6) {
+      result = '${(absValue / 1e6).toStringAsFixed(1)} jt';
+    } else if (absValue >= 1e3) {
+      result = '${(absValue / 1e3).toStringAsFixed(1)} rb';
+    } else {
+      result = absValue.toInt().toString();
+    }
+    return value < 0 ? '-$result' : result;
   }
 
   static String timeAgo(DateTime dateTime) {

@@ -1,54 +1,67 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:money_management_app/models/expense_model.dart';
 import 'package:money_management_app/services/auth_service.dart';
+import 'dart:developer';
 
 class ExpenseService {
   static Future<List<ExpenseModel>> fetchAll() async {
+    log("Fetching all expenses...");
     try {
       final userId = await AuthService().getCurrentUserId();
+      log("User ID for expenses: $userId");
       final snapshot = await FirebaseFirestore.instance
           .collection('expenses')
           .where('userId', isEqualTo: userId)
           .get();
 
+      log("Found ${snapshot.docs.length} expenses for user $userId");
       return snapshot.docs
-          .map((doc) => ExpenseModel.fromMap(doc.data()))
+          .map((doc) => ExpenseModel.fromMap({...doc.data(), 'id': doc.id}))
           .toList();
     } catch (e) {
+      log("Failed to load expenses: $e", level: 1000);
       throw Exception('Failed to load expenses: ${e.toString()}');
     }
   }
 
   static Future<void> addExpense(ExpenseModel expense) async {
+    log("Adding new expense: ${expense.toMap()}");
     try {
-      final docRef = await FirebaseFirestore.instance
+      final expenseRef = await FirebaseFirestore.instance
           .collection('expenses')
           .add(expense.toMap());
-      // Update the document with its generated ID
-      await docRef.update({'id': docRef.id});
+      log("Expense added with ID: ${expenseRef.id}");
+      await expenseRef.update({'id': expenseRef.id});
     } catch (e) {
+      log("Failed to add expense: $e", level: 1000);
       throw Exception('Failed to add expense: ${e.toString()}');
     }
   }
 
   static Future<void> updateExpense(ExpenseModel expense) async {
+    log("Updating expense: ${expense.id}");
     try {
       await FirebaseFirestore.instance
           .collection('expenses')
           .doc(expense.id)
           .update(expense.toMap());
+      log("Expense updated: ${expense.id}");
     } catch (e) {
+      log("Failed to update expense: $e", level: 1000);
       throw Exception('Failed to update expense: ${e.toString()}');
     }
   }
 
   static Future<void> deleteExpense(ExpenseModel expense) async {
+    log("Deleting expense: ${expense.id}");
     try {
       await FirebaseFirestore.instance
           .collection('expenses')
           .doc(expense.id)
           .delete();
+      log("Expense deleted: ${expense.id}");
     } catch (e) {
+      log("Failed to delete expense: $e", level: 1000);
       throw Exception('Failed to delete expense: ${e.toString()}');
     }
   }
